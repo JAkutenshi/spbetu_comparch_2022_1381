@@ -1,6 +1,6 @@
 #git fetch girlsnrose     # Биктагирова Дарья           
 git fetch Silence564     # Васильева Ольга             
-#git fetch vozmitelvlas   # Возмитель Влас	          
+git fetch vozmitelvlas   # Возмитель Влас	          
 #git fetch pddemchuk      # Демчук Полина               
 git fetch denisova-ok    # Денисова Ольга              
 git fetch snusoedochka   # Деркачева Дерья             
