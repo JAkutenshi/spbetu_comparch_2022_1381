@@ -1,7 +1,0 @@
-
- Start  Stop   Length Name                   Class
- 00000H 00017H 00018H ASTACK                 
- 00020H 0005AH 0003BH DATA                   
- 00060H 0007AH 0001BH CODE                   
-
-Program entry point at 0006:0005
