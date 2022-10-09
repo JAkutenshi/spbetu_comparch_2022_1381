@@ -1,4 +1,4 @@
-#Microsoft (R) Macro Assembler Version 5.10                  10/4/21 20:55:27
+#Microsoft (R) Macro Assembler Version 5.10                  
                                                              Page     1-1
 
 
@@ -56,7 +56,7 @@
  000E  B3 24			        mov  bl,EOL
  0010  B7 CE			        mov  bh,n2
 				;  Прямая   адресация
-#Microsoft (R) Macro Assembler Version 5.10                  10/4/21 20:55:27
+#Microsoft (R) Macro Assembler Version 5.10                  
                                                              Page     1-2
 
 
@@ -119,7 +119,7 @@ lab2.asm(81): error A2047: Multiple index registers
 lab2.asm(88): error A2006: Phase error between passes
  0076				CODE      ENDS
 				END Main
-#Microsoft (R) Macro Assembler Version 5.10                  10/4/21 20:55:27
+#Microsoft (R) Macro Assembler Version 5.10           
                                                              Symbols-1
 
 
