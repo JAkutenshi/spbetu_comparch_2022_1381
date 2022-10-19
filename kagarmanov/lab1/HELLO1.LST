@@ -1,0 +1,87 @@
+Microsoft (R) Macro Assembler Version 5.10                  10/8/22 21:38:4
+                                                             Page     1-1
+
+
+				
+; HELLO1.ASM -  упрощенная версия учебной программы лаб. раб. N1
+;				по дисциплине "Архитектура компьютера"
+; *****************************************************************
+; Назначение: Программа формирует и выводит на экран приветствие
+;             пользователя с помощью функции ДОС "Вывод строки"
+;             (номер 09 прерывание 21h), которая:
+;              - обеспечиваниет вывод га экран строки символов,
+;                заканчивающейся знаком "$";
+;              - требует задания в регистре ah номера фунции=09h,
+;                а в регистре dx - смещения адреса выводимой
+;                строки;
+;              - использует регистр  ax и не сохраняет его
+;                содержимое.
+; ******************************************************************
+				
+				   DOSSEG                                      ; Задание сегментов под ДОС
+				   .MODEL  SMALL                               ; Модель памяти - SMALL(Малая)
+				   .STACK  100h                                ; Отвести под Стек 256 байт
+				   .DATA                                       ; Начало сегмента данных
+ 0000				Greeting  LABEL  BYTE                          ; Текст приветствия
+ 0000  82 A0 E1 20 AF E0	   DB 'Вас приветствует студент гр. 1381 - Кагарманов Д. И.',13,10,'$'
+       A8 A2 A5 E2 E1 E2	
+       A2 E3 A5 E2 20 E1	
+       E2 E3 A4 A5 AD E2	
+       20 A3 E0 2E 20 31	
+       33 38 31 20 2D 20	
+       8A A0 A3 A0 E0 AC	
+       A0 AD AE A2 20 84	
+       2E 20 88 2E 0D 0A	
+       24			
+				   .CODE                                ; Начало сегмента кода
+ 0000  B8 ---- R		   mov  ax, @data                        ; Загрузка в DS адреса начала
+ 0003  8E D8			   mov  ds, ax                           ; сегмента данных
+Microsoft (R) Macro Assembler Version 5.10                  10/17/22 21:38:4
+                                                             Page     1-2
+
+
+ 0005  BA 0000 R		   mov  dx, OFFSET Greeting              ; Загрузка в dx смещения 
+				                                        ; адреса текста привествия
+ 0008				DisplayGreeting:
+ 0008  B4 09			   mov  ah, 9                            ; # функции ДОС печати строки
+ 000A  CD 21			   int  21h                             ; выводна экран приветствия
+ 000C  B4 4C			   mov  ah, 4ch                          ; # функции ДОС завершенич программы
+ 000E  CD 21			   int  21h                             ; завершение программы и выход в ДОС
+				   END
+Microsoft (R) Macro Assembler Version 5.10                  10/17/22 21:38:4
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	0037	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	0010	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+DISPLAYGREETING  . . . . . . . .  	L NEAR	0008	_TEXT
+
+GREETING . . . . . . . . . . . .  	L BYTE	0000	_DATA
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  HELLO1		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     33 Source  Lines
+     33 Total   Lines
+     19 Symbols
+
+  47994 + 461313 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
