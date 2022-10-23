@@ -74,7 +74,7 @@ ABS1:
 
 CHECK:
 	cmp bx,i2
-	jg PART21	;если 0 > i2, то на ABS2
+	jg ABS2		;если 0 > i2, то на ABS2
 	jmp PART21	;иначе идём на PART21
 
 ABS2:
