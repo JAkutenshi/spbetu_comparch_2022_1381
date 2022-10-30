@@ -1,0 +1,138 @@
+Microsoft (R) Macro Assembler Version 5.10                  10/30/22 01:13:2
+                                                             Page     1-1
+
+
+				dosseg
+				.model small
+				.stack 100h
+				.data
+ 0000  0001			i dw 1
+ 0002  0002			a dw 2
+ 0004  0003			b dw 3
+ 0006  FFFF			k dw -1
+ 0008  0000			res dw 0
+				.code
+ 0000  B8 ---- R		mov ax, @data
+ 0003  8E D8			mov ds, ax
+				
+ 0005  A1 0002 R		mov ax, a
+ 0008  3B 06 0004 R		cmp ax, b  ;сравниваем равны л�
+				� a и b.
+ 000C  7F 1B			jg second  ;выполняет короткий
+				 переход, если первый опер
+				анд БОЛЬШЕ второго операн
+				да
+				
+ 000E				first:     ;if(a<=b)
+ 000E  8B 0E 0000 R		mov cx, i  ;i
+ 0012  03 0E 0000 R		add cx, i  ;2i
+ 0016  03 0E 0000 R		add cx, i  ;3i
+ 001A  83 C1 04			add cx, 4  ;3i+4
+				
+ 001D  8B C1			mov ax, cx ;3i+4
+ 001F  2D 0007			sub ax, 7  ;3i-3
+ 0022  D1 E0			sal ax, 1  ;6i-6
+ 0024  F7 D8			neg ax     ;-(6i-6)  
+ 0026  EB 13 90			jmp final
+				
+ 0029				second:    ;if(a>b)
+ 0029  B9 000F			mov cx, 15 ;15
+ 002C  2B 0E 0000 R		sub cx, i  ;15 - i
+ 0030  2B 0E 0000 R		sub cx, i  ;15-2i
+				
+ 0034  8B C1			mov ax, cx ;15-2i
+ 0036  2D 0005			sub ax, 5  ;10-2i
+ 0039  D1 E0			sal ax, 1  ;20-4i ????????
+				
+ 003B				final:
+ 003B				f_0:
+ 003B  83 3E 0006 R 00		cmp k, 0   ; сравниваем равны л
+				и k и 0
+ 0040  7D 13			jge f_1   ;переход, если больш�
+				� или равно
+ 0042  2B C8			sub cx, ax
+ 0044  8B C1			mov ax, cx
+ 0046				getabs_0:  ;модуль
+ 0046  F7 D8			neg ax
+ 0048  78 FC			js getabs_0
+ 004A  3D 0002			cmp ax, 2  ;сравниваем 
+Microsoft (R) Macro Assembler Version 5.10                  10/30/22 01:13:2
+                                                             Page     1-2
+
+
+ 004D  7C 12			jl answer  ; ax < 2 => переход
+ 004F  B8 0002			mov ax, 2
+ 0052  EB 0D 90			jmp answer ;безусловный перехо
+				д
+				
+				
+ 0055				f_1:
+ 0055				getabs_1:  ; отрицательный 
+ 0055  F7 D8			neg ax
+ 0057  79 FC			jns getabs_1 ; переход, если нет 
+				знака
+				
+ 0059  3D FFFA			cmp ax, -6
+ 005C  7F 03			jg answer   ; переходим, если ax >
+				 -6
+ 005E  B8 FFFA			mov ax, -6
+				
+ 0061				answer: 
+ 0061  A3 0008 R		mov res, ax
+ 0064  B4 4C			mov ah, 4ch
+ 0066  CD 21			int 21h
+				end
+Microsoft (R) Macro Assembler Version 5.10                  10/30/22 01:13:2
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	000A	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	0068	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+A  . . . . . . . . . . . . . . .  	L WORD	0002	_DATA
+ANSWER . . . . . . . . . . . . .  	L NEAR	0061	_TEXT
+
+B  . . . . . . . . . . . . . . .  	L WORD	0004	_DATA
+
+FINAL  . . . . . . . . . . . . .  	L NEAR	003B	_TEXT
+FIRST  . . . . . . . . . . . . .  	L NEAR	000E	_TEXT
+F_0  . . . . . . . . . . . . . .  	L NEAR	003B	_TEXT
+F_1  . . . . . . . . . . . . . .  	L NEAR	0055	_TEXT
+
+GETABS_0 . . . . . . . . . . . .  	L NEAR	0046	_TEXT
+GETABS_1 . . . . . . . . . . . .  	L NEAR	0055	_TEXT
+
+I  . . . . . . . . . . . . . . .  	L WORD	0000	_DATA
+
+K  . . . . . . . . . . . . . . .  	L WORD	0006	_DATA
+
+RES  . . . . . . . . . . . . . .  	L WORD	0008	_DATA
+
+SECOND . . . . . . . . . . . . .  	L NEAR	0029	_TEXT
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  lr3		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     67 Source  Lines
+     67 Total   Lines
+     30 Symbols
+
+  47982 + 459278 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
