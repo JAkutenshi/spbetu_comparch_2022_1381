@@ -46,29 +46,26 @@ f1_end:
     mov var_i1, ax ; i1 = f1(i)
     mov var_i2, cx ; i2 = f2(i)
 f3:
-    mov bx, var_i2
-    cmp bx, 0h
+    cmp cx, 0h
     jge abs_i2
-    neg bx
-abs_i2: ; bx = |i2|
-    mov ax, var_k    
-    cmp ax, 0h
+    neg cx
+abs_i2: ; cx = |i2|   
+    cmp var_k, 0h
     jl f3_1
 f3_2:
-    sub bx, 3h ; bx = |i2| - 3
-    cmp bx, 4h
+    sub cx, 3h ; cx = |i2| - 3
+    cmp cx, 4h
     jge max
-    mov bx, 4h
+    mov cx, 4h
 max:
-    mov ax, bx
+    mov ax, cx
     jmp f3_end
 f3_1:
-    mov ax, var_i1
     cmp ax, 0h
     jge abs_i1
     neg ax
 abs_i1: ; ax = |i1|
-    sub ax, bx
+    sub ax, cx
 f3_end:
     mov var_res, ax
     ret

@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 5.10                  10/21/22 10:46:3
+Microsoft (R) Macro Assembler Version 5.10                  10/24/22 14:06:0
                                                              Page     1-1
 
 
@@ -53,40 +53,38 @@
  0037  A3 0008 R		    mov var_i1, ax ; i1 = f1(i)
  003A  89 0E 000A R		    mov var_i2, cx ; i2 = f2(i)
  003E				f3:
- 003E  8B 1E 000A R		    mov bx, var_i2
- 0042  83 FB 00			    cmp bx, 0h
- 0045  7D 02			    jge abs_i2
-Microsoft (R) Macro Assembler Version 5.10                  10/21/22 10:46:3
+ 003E  83 F9 00			    cmp cx, 0h
+ 0041  7D 02			    jge abs_i2
+ 0043  F7 D9			    neg cx
+Microsoft (R) Macro Assembler Version 5.10                  10/24/22 14:06:0
                                                              Page     1-2
 
 
- 0047  F7 DB			    neg bx
- 0049				abs_i2: ; bx = |i2|
- 0049  A1 0006 R		    mov ax, var_k    
- 004C  3D 0000			    cmp ax, 0h
- 004F  7C 10			    jl f3_1
- 0051				f3_2:
- 0051  83 EB 03			    sub bx, 3h ; bx = |i2| - 3
- 0054  83 FB 04			    cmp bx, 4h
- 0057  7D 03			    jge max
- 0059  BB 0004			    mov bx, 4h
- 005C				max:
- 005C  8B C3			    mov ax, bx
- 005E  EB 0D 90			    jmp f3_end
- 0061				f3_1:
- 0061  A1 0008 R		    mov ax, var_i1
- 0064  3D 0000			    cmp ax, 0h
- 0067  7D 02			    jge abs_i1
- 0069  F7 D8			    neg ax
- 006B				abs_i1: ; ax = |i1|
- 006B  2B C3			    sub ax, bx
- 006D				f3_end:
- 006D  A3 000C R		    mov var_res, ax
- 0070  CB			    ret
- 0071				Main ENDP
- 0071				CODE ENDS
+ 0045				abs_i2: ; cx = |i2|   
+ 0045  83 3E 0006 R 00		    cmp var_k, 0h
+ 004A  7C 10			    jl f3_1
+ 004C				f3_2:
+ 004C  83 E9 03			    sub cx, 3h ; cx = |i2| - 3
+ 004F  83 F9 04			    cmp cx, 4h
+ 0052  7D 03			    jge max
+ 0054  B9 0004			    mov cx, 4h
+ 0057				max:
+ 0057  8B C1			    mov ax, cx
+ 0059  EB 0A 90			    jmp f3_end
+ 005C				f3_1:
+				    ;mov ax, var_i1
+ 005C  3D 0000			    cmp ax, 0h
+ 005F  7D 02			    jge abs_i1
+ 0061  F7 D8			    neg ax
+ 0063				abs_i1: ; ax = |i1|
+ 0063  2B C1			    sub ax, cx
+ 0065				f3_end:
+ 0065  A3 000C R		    mov var_res, ax
+ 0068  CB			    ret
+ 0069				Main ENDP
+ 0069				CODE ENDS
 				END Main
-Microsoft (R) Macro Assembler Version 5.10                  10/21/22 10:46:3
+Microsoft (R) Macro Assembler Version 5.10                  10/24/22 14:06:0
                                                              Symbols-1
 
 
@@ -95,27 +93,27 @@ Segments and Groups:
                 N a m e         	Length	 Align	Combine Class
 
 ASTACK . . . . . . . . . . . . .  	0040	PARA	STACK	
-CODE . . . . . . . . . . . . . .  	0071	PARA	NONE	
+CODE . . . . . . . . . . . . . .  	0069	PARA	NONE	
 DATA . . . . . . . . . . . . . .  	000E	PARA	NONE	
 
 Symbols:            
 
                 N a m e         	Type	 Value	 Attr
 
-ABS_I1 . . . . . . . . . . . . .  	L NEAR	006B	CODE
-ABS_I2 . . . . . . . . . . . . .  	L NEAR	0049	CODE
+ABS_I1 . . . . . . . . . . . . .  	L NEAR	0063	CODE
+ABS_I2 . . . . . . . . . . . . .  	L NEAR	0045	CODE
 
 F1 . . . . . . . . . . . . . . .  	L NEAR	0009	CODE
 F1_1 . . . . . . . . . . . . . .  	L NEAR	002D	CODE
 F1_2 . . . . . . . . . . . . . .  	L NEAR	001A	CODE
 F1_END . . . . . . . . . . . . .  	L NEAR	0037	CODE
 F3 . . . . . . . . . . . . . . .  	L NEAR	003E	CODE
-F3_1 . . . . . . . . . . . . . .  	L NEAR	0061	CODE
-F3_2 . . . . . . . . . . . . . .  	L NEAR	0051	CODE
-F3_END . . . . . . . . . . . . .  	L NEAR	006D	CODE
+F3_1 . . . . . . . . . . . . . .  	L NEAR	005C	CODE
+F3_2 . . . . . . . . . . . . . .  	L NEAR	004C	CODE
+F3_END . . . . . . . . . . . . .  	L NEAR	0065	CODE
 
-MAIN . . . . . . . . . . . . . .  	F PROC	0000	CODE	Length = 0071
-MAX  . . . . . . . . . . . . . .  	L NEAR	005C	CODE
+MAIN . . . . . . . . . . . . . .  	F PROC	0000	CODE	Length = 0069
+MAX  . . . . . . . . . . . . . .  	L NEAR	0057	CODE
 
 VAR_A  . . . . . . . . . . . . .  	L WORD	0000	DATA
 VAR_B  . . . . . . . . . . . . .  	L WORD	0002	DATA
@@ -130,11 +128,11 @@ VAR_RES  . . . . . . . . . . . .  	L WORD	000C	DATA
 @VERSION . . . . . . . . . . . .  	TEXT  510		
 
 
-     77 Source  Lines
-     77 Total   Lines
+     75 Source  Lines
+     75 Total   Lines
      27 Symbols
 
-  48038 + 459222 Bytes symbol space free
+  48046 + 459214 Bytes symbol space free
 
       0 Warning Errors
       0 Severe  Errors
