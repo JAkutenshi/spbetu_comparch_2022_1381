@@ -63,7 +63,7 @@ f3step2:
 f3step3:
 	sub i2,3
 	cmp i2,4
-	jge max4 ;i2>=4
+	jge max4 
 	mov ax,4	
 	jmp f3end
 max4:
