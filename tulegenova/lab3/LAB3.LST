@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 5.10                  10/31/22 00:18:3
+Microsoft (R) Macro Assembler Version 5.10                  10/31/22 22:13:0
                                                              Page     1-1
 
 
@@ -15,67 +15,62 @@
 				.code
  0000  B8 ---- R		mov ax, @data           
  0003  8E D8			mov ds, ax
- 0005  A1 0000 R		mov ax, a
- 0008  3B 06 0002 R		cmp ax, b
- 000C  7F 22			jg func2
+ 0005  8B 16 0004 R		mov dx, i  ; i
+ 0009  D1 E2			shl dx, 1  ; 2i
+ 000B  03 16 0004 R		add dx, i  ; 3i
+ 000F  A1 0000 R		mov ax, a
+ 0012  3B 06 0002 R		cmp ax, b
+ 0016  7F 11			jg func2
 				
- 000E				func1:    ; a<=b
- 000E  A1 0004 R			mov ax, i    ; i
- 0011  D1 E0				shl ax, 1    ; 2i
- 0013  03 06 0004 R			add ax, i    ; 3i
- 0017  D1 E0				shl ax, 1    ; 6i
- 0019  2D 0006				sub ax, 6    ; 6i-6
- 001C  F7 D8				neg ax       ; -(6i-6)
+ 0018				func1:    ; a<=b
+ 0018  8B CA				mov cx, dx   ; 3i
+ 001A  F7 D9				neg cx       ; -3i
+ 001C  83 C1 0C				add cx, 12   ; 9-3(i-1)
 				
- 001E  8B 0E 0004 R			mov cx, i    ; i
- 0022  D1 E1				shl cx, 1    ; 2i
- 0024  03 0E 0004 R			add cx, i    ; 3i
- 0028  F7 D9				neg cx       ; -3i
- 002A  83 C1 0C				add cx, 12   ; 9-3(i-1)
- 002D  EB 1E 90				jmp func3
+ 001F  8B C1				mov ax, cx   ; 12-3i
+ 0021  D1 E0				shl ax, 1    ; 24-6i
+ 0023  2D 0012				sub ax, 18   ; -(6i-6)
+ 0026  EB 17 90				jmp func3
 				
- 0030				func2:    ; a>b
- 0030  A1 0004 R			mov ax, i    ; i
- 0033  03 C0				add ax, ax   ; 2i
- 0035  03 C0				add ax, ax   ; 4i
- 0037  F7 D8				neg ax       ; -4i
- 0039  05 0014				add ax, 20   ; 20-4i
+ 0029				func2:    ; a>b
+ 0029  8B CA				mov cx, dx   ; 3i
+ 002B  D1 E1				shl cx, 1    ; 6i
+ 002D  83 C1 08				add cx, 8    ; 6i+8
+ 0030  F7 D9				neg cx       ; -(6i+8)
 				
- 003C  8B 0E 0004 R			mov cx, i    ; i
- 0040  D1 E1				shl cx, 1    ; 2i
- 0042  03 0E 0004 R			add cx, i    ; 3i
- 0046  D1 E1				shl cx, 1    ; 6i
- 0048  83 C1 08				add cx, 8    ; 6i+8
- 004B  F7 D9				neg cx       ; -(6i+8)
+ 0032  8B C1				mov ax, cx   ; -(6i+8)
+ 0034  05 001C				add ax, 28   ; 20-6i
+ 0037  03 06 0004 R			add ax, i    ; 20-5i
+ 003B  03 06 0004 R			add ax, i    ; 20-4i
 					
- 004D				func3:       
- 004D  83 3E 0006 R 00			cmp k, 0
- 0052  7D 09				jge max
- 0054  2B C8				sub cx, ax   ; i2-i1
+ 003F				func3:       
+ 003F  83 3E 0006 R 00			cmp k, 0
+ 0044  7D 09				jge max
+ 0046  2B C8				sub cx, ax   ; i2-i1
 				
- 0056				abs:     ; k<0
- 0056  F7 D9				neg cx
- 0058  78 FC				js abs       ;|i1-i2|
-Microsoft (R) Macro Assembler Version 5.10                  10/31/22 00:18:3
+ 0048				abs:     ; k<0
+ 0048  F7 D9				neg cx
+ 004A  78 FC				js abs       ;|i1-i2|
+ 004C  EB 10 90				jmp result
+				
+ 004F				max:     ; k>=0
+ 004F  F7 D9				neg cx       ;-i2
+ 0051  78 FC				js max       ;|i2|
+Microsoft (R) Macro Assembler Version 5.10                  10/31/22 22:13:0
                                                              Page     1-2
 
 
- 005A  EB 10 90				jmp result
+ 0053  83 F9 07				cmp cx, 7 
+ 0056  7D 06				jge result
+ 0058  B9 0007				mov cx, 7
+ 005B  EB 01 90				jmp result
 				
- 005D				max:     ; k>=0
- 005D  F7 D9				neg cx       ;-i2
- 005F  78 FC				js max       ;|i2|
- 0061  83 F9 07				cmp cx, 7 
- 0064  7D 06				jge result
- 0066  B9 0007				mov cx, 7
- 0069  EB 01 90				jmp result
-				
- 006C				result: 
- 006C  89 0E 0008 R			mov res, cx
- 0070  B4 4C				mov ah, 4ch
- 0072  CD 21				int 21h
+ 005E				result: 
+ 005E  89 0E 0008 R			mov res, cx
+ 0062  B4 4C				mov ah, 4ch
+ 0064  CD 21				int 21h
 					end
-Microsoft (R) Macro Assembler Version 5.10                  10/31/22 00:18:3
+Microsoft (R) Macro Assembler Version 5.10                  10/31/22 22:13:0
                                                              Symbols-1
 
 
@@ -86,29 +81,29 @@ Segments and Groups:
 DGROUP . . . . . . . . . . . . .  	GROUP
   _DATA  . . . . . . . . . . . .  	000A	WORD	PUBLIC	'DATA'
   STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
-_TEXT  . . . . . . . . . . . . .  	0074	WORD	PUBLIC	'CODE'
+_TEXT  . . . . . . . . . . . . .  	0066	WORD	PUBLIC	'CODE'
 
 Symbols:            
 
                 N a m e         	Type	 Value	 Attr
 
 A  . . . . . . . . . . . . . . .  	L WORD	0000	_DATA
-ABS  . . . . . . . . . . . . . .  	L NEAR	0056	_TEXT
+ABS  . . . . . . . . . . . . . .  	L NEAR	0048	_TEXT
 
 B  . . . . . . . . . . . . . . .  	L WORD	0002	_DATA
 
-FUNC1  . . . . . . . . . . . . .  	L NEAR	000E	_TEXT
-FUNC2  . . . . . . . . . . . . .  	L NEAR	0030	_TEXT
-FUNC3  . . . . . . . . . . . . .  	L NEAR	004D	_TEXT
+FUNC1  . . . . . . . . . . . . .  	L NEAR	0018	_TEXT
+FUNC2  . . . . . . . . . . . . .  	L NEAR	0029	_TEXT
+FUNC3  . . . . . . . . . . . . .  	L NEAR	003F	_TEXT
 
 I  . . . . . . . . . . . . . . .  	L WORD	0004	_DATA
 
 K  . . . . . . . . . . . . . . .  	L WORD	0006	_DATA
 
-MAX  . . . . . . . . . . . . . .  	L NEAR	005D	_TEXT
+MAX  . . . . . . . . . . . . . .  	L NEAR	004F	_TEXT
 
 RES  . . . . . . . . . . . . . .  	L WORD	0008	_DATA
-RESULT . . . . . . . . . . . . .  	L NEAR	006C	_TEXT
+RESULT . . . . . . . . . . . . .  	L NEAR	005E	_TEXT
 
 @CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
 @CODESIZE  . . . . . . . . . . .  	TEXT  0		
@@ -118,11 +113,11 @@ RESULT . . . . . . . . . . . . .  	L NEAR	006C	_TEXT
 @VERSION . . . . . . . . . . . .  	TEXT  510		
 
 
-     69 Source  Lines
-     69 Total   Lines
+     64 Source  Lines
+     64 Total   Lines
      28 Symbols
 
-  47994 + 459266 Bytes symbol space free
+  47990 + 459270 Bytes symbol space free
 
       0 Warning Errors
       0 Severe  Errors

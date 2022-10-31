@@ -11,36 +11,33 @@ dosseg
 .code
 mov ax, @data           
 mov ds, ax
+mov dx, i  ; i
+shl dx, 1  ; 2i
+add dx, i  ; 3i
 mov ax, a
 cmp ax, b
 jg func2
 
 func1:    ; a<=b
-	mov ax, i    ; i
-	shl ax, 1    ; 2i
-	add ax, i    ; 3i
-	mov cx, ax   ; 3i
-	shl ax, 1    ; 6i
-	sub ax, 6    ; 6i-6
-	neg ax       ; -(6i-6)
-
+	mov cx, dx   ; 3i
 	neg cx       ; -3i
 	add cx, 12   ; 9-3(i-1)
+
+	mov ax, cx   ; 12-3i
+	shl ax, 1    ; 24-6i
+	sub ax, 18   ; -(6i-6)
 	jmp func3
 
 func2:    ; a>b
-	mov ax, i    ; i
-	add ax, ax   ; 2i
-	add ax, ax   ; 4i
-	neg ax       ; -4i
-	add ax, 20   ; 20-4i
-
-	mov cx, i    ; i
-	shl cx, 1    ; 2i
-	add cx, i    ; 3i
+	mov cx, dx   ; 3i
 	shl cx, 1    ; 6i
 	add cx, 8    ; 6i+8
 	neg cx       ; -(6i+8)
+
+	mov ax, cx   ; -(6i+8)
+	add ax, 28   ; 20-6i
+	add ax, i    ; 20-5i
+	add ax, i    ; 20-4i
 	
 func3:       
 	cmp k, 0
@@ -58,6 +55,7 @@ max:     ; k>=0
 	cmp cx, 7 
 	jge result
 	mov cx, 7
+	jmp result
 
 result: 
 	mov res, cx
