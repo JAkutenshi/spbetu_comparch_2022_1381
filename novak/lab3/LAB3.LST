@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:46:0
+Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:51:2
                                                              Page     1-1
 
 
@@ -13,10 +13,10 @@
 				 
  0000				DATA      SEGMENT
 				 
- 0000  FFFA			i	DW	-6
- 0002  0002			a 	DW 	2
- 0004  0004			b	DW	4
- 0006  0005			k	DW	5
+ 0000  0000			i	DW	0
+ 0002  0000			a 	DW 	0
+ 0004  0000			b	DW	0
+ 0006  0000			k	DW	0
 				 
  0008  0000			i1	DW	0		;f1
  000A  0000			i2	DW	0		;f2
@@ -56,7 +56,7 @@
 				 
  0035				PART1:			;если a>b
  0035  8B 0E 0000 R			mov cx,i	;cx = i	
-Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:46:0
+Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:51:2
                                                              Page     1-2
 
 
@@ -94,7 +94,7 @@
  0063  7F 03				jg ABS2		;если 0 > i2, то 
 				на ABS2
  0065  EB 1F 90				jmp PART4	;иначе идём н
-				а PART21
+				а PART4
 				
  0068				ABS2:
  0068  F7 1E 000A R			neg i2
@@ -114,7 +114,7 @@
  007F  89 1E 000C R			mov res,bx	;res = bx = 6
  0083  EB 0B 90				jmp ENDPART
 				 
-Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:46:0
+Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:51:2
                                                              Page     1-3
 
 
@@ -130,7 +130,7 @@
  0092				Main      ENDP
  0092				CODE      ENDS
 				          END Main
-Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:46:0
+Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:51:2
                                                              Symbols-1
 
 
@@ -177,7 +177,7 @@ RES  . . . . . . . . . . . . . .  	L WORD	000C	DATA
 @FILENAME  . . . . . . . . . . .  	TEXT  lab3		
 @VERSION . . . . . . . . . . . .  	TEXT  510		
 
-Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:46:0
+Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:51:2
                                                              Symbols-2
 
 
@@ -186,7 +186,7 @@ RES  . . . . . . . . . . . . . .  	L WORD	000C	DATA
     106 Total   Lines
      26 Symbols
 
-  48018 + 461289 Bytes symbol space free
+  48058 + 461249 Bytes symbol space free
 
       0 Warning Errors
       0 Severe  Errors
