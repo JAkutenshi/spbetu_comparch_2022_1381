@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 5.10                  10/23/22 16:13:2
+Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:46:0
                                                              Page     1-1
 
 
@@ -13,10 +13,10 @@
 				 
  0000				DATA      SEGMENT
 				 
- 0000  0000			i	DW	0
- 0002  0000			a 	DW 	0
- 0004  0000			b	DW	0
- 0006  0000			k	DW	0
+ 0000  FFFA			i	DW	-6
+ 0002  0002			a 	DW 	2
+ 0004  0004			b	DW	4
+ 0006  0005			k	DW	5
 				 
  0008  0000			i1	DW	0		;f1
  000A  0000			i2	DW	0		;f2
@@ -33,109 +33,104 @@
 				;Вычисление f1 и f2
  0005  A1 0002 R			mov ax,a	;ax = a
  0008  8B 0E 0000 R			mov cx,i	;cx = i
- 000C  8B 16 0004 R			mov dx,b	;dx = b
- 0010  3B C2				cmp ax,dx	;Сравнение з�
-				�ачений a и b	
- 0012  7F 2B				jg PART1	;если a>b то на
+ 000C  3B 06 0004 R			cmp ax,b	;Сравнение з�
+				�ачений a и b
+ 0010  8B 16 0004 R			mov dx,b	;dx = b	
+ 0014  7F 1F				jg PART1	;если a>b то на
 				 PART1
 				 
 					;если a<=b:
- 0014  B8 0008				mov ax,8	;ax = 8
- 0017  8B 16 0000 R			mov dx,i	;dx = i
- 001B  D1 E2				sal dx,1	;dx = 2i
- 001D  D1 E1				sal cx,1	;cx = 2i
- 001F  D1 E1				sal cx,1	;cx = 4i
- 0021  03 CA				add cx,dx	;cx = 2i + 4i = 6i
- 0023  2B C1				sub ax,cx	;ax = 8 - 6i	
- 0025  A3 0008 R			mov i1,ax	;i1(f1) = ax = 8 - 6i
+ 0016  B8 0008				mov ax,8	;ax = 8
+ 0019  8B 16 0000 R			mov dx,i	;dx = i
+ 001D  D1 E2				sal dx,1	;dx = 2i
+ 001F  D1 E1				sal cx,1	;cx = 2i
+ 0021  D1 E1				sal cx,1	;cx = 4i
+ 0023  03 CA				add cx,dx	;cx = 2i + 4i = 6i
+ 0025  2B C1				sub ax,cx	;ax = 8 - 6i	
+ 0027  A3 0008 R			mov i1,ax	;i1(f1) = ax = 8 - 6i
 				 
- 0028  8B 0E 0000 R			mov cx,i	;cx = i
- 002C  8B 16 0000 R			mov dx, i	;dx = i
- 0030  D1 E2				sal dx,1	;dx = 2i
- 0032  03 CA				add cx,dx	;cx = i + 2i = 3i
- 0034  B8 000A				mov ax, 10	;ax = 10
- 0037  2B C1				sub ax, cx	;ax = ax - cx = 10 - 3i
- 0039  A3 000A R			mov i2,ax	;i2(f2) = ax = 10 - 3i
-Microsoft (R) Macro Assembler Version 5.10                  10/23/22 16:13:2
+ 002A  D1 F8				sar ax,1	;ax = ax/2 = 4-3i
+ 002C  05 0006				add ax,6	;ax = ax+6 = 10-3i
+ 002F  A3 000A R			mov i2,ax	;i2(f2) = ax = 10 - 3i
+ 0032  EB 17 90				jmp PART2	;идем на PART2
+				 
+ 0035				PART1:			;если a>b
+ 0035  8B 0E 0000 R			mov cx,i	;cx = i	
+Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:46:0
                                                              Page     1-2
 
 
- 003C  EB 1B 90				jmp PART2	;идем на PART2
+ 0039  D1 E1				sal cx,1	;cx = 2i
+ 003B  D1 E1				sal cx,1	;cx = 4i
+ 003D  B8 0007				mov ax,7	;ax = 7
+ 0040  2B C1				sub ax,cx	;ax = ax - cx = 7 - 4i
+ 0042  A3 0008 R			mov i1,ax	;i1(f1) = ax = 7 - 4i
 				 
- 003F				PART1:			;если a>b
- 003F  8B 0E 0000 R			mov cx,i	;cx = i	
- 0043  D1 E1				sal cx,1	;cx = 2i
- 0045  D1 E1				sal cx,1	;cx = 4i
- 0047  B8 0007				mov ax,7	;ax = 7
- 004A  2B C1				sub ax,cx	;ax = ax - cx = 7 - 4i
- 004C  A3 0008 R			mov i1,ax	;i1(f1) = ax = 7 - 4i
-				 
- 004F  B8 FFFB				mov ax,-5	;ax = -5
- 0052  03 C1				add ax,cx	;ax = ax + cx = 4i - 5
- 0054  F7 D8				neg ax		;ax = -(4i - 5)
- 0056  A3 000A R			mov i2,ax	;i2(f2) = cx = -(4i - 5
+ 0045  2D 0002				sub ax,2	;ax = ax-2 = 7-4i-2 = 5
+				-4i
+ 0048  A3 000A R			mov i2,ax	;i2(f2) = cx = -(4i - 5
 				)
 				 
 				;Вычисление f3
- 0059				PART2:
- 0059  BB 0000				mov bx,0
- 005C  3B 1E 0008 R			cmp bx,i1	
- 0060  7F 03				jg ABS1		;если 0 > i1, то 
-				на ABS1
- 0062  EB 05 90				jmp CHECK	;иначе идем н
-				а CHECK
+ 004B				PART2:
+ 004B  BB 0000				mov bx,0
+ 004E  3B 1E 0008 R			cmp bx,i1	
+ 0052  76 04				jbe CHECK1	;если 0 <= i1, то
+				 на CHECK1
 					
- 0065				ABS1:
- 0065  F7 1E 0008 R			neg i1
+ 0054				ABS1:
+ 0054  F7 1E 0008 R			neg i1
 				
- 0069				CHECK:
- 0069  3B 1E 000A R			cmp bx,i2
- 006D  7F 07				jg PART21	;если 0 > i2, то 
+ 0058				CHECK1:
+ 0058  A1 0006 R			mov ax,k
+				 
+ 005B  3B C3				cmp ax,bx	;сравниваем k
+				 и 0
+ 005D  74 10				je PART21	;если k равно 
+				0, то на PART21
+				
+ 005F				CHECK:
+ 005F  3B 1E 000A R			cmp bx,i2
+ 0063  7F 03				jg ABS2		;если 0 > i2, то 
 				на ABS2
- 006F  EB 05 90				jmp PART21	;иначе идём н
+ 0065  EB 1F 90				jmp PART4	;иначе идём н
 				а PART21
 				
- 0072				ABS2:
- 0072  F7 1E 000A R			neg i2
+ 0068				ABS2:
+ 0068  F7 1E 000A R			neg i2
+ 006C  EB 18 90				jmp PART4
 				
- 0076				PART21:
- 0076  A1 0006 R			mov ax,k
-				 
- 0079  3B C3				cmp ax,bx	;сравниваем k
-				 и 0
- 007B  75 17				jne PART4	;если k не рав
-				но 0, то на PART4
-				 	
+ 006F				PART21:	
 							;если к = 0
- 007D  A1 0008 R			mov ax,i1	;ax = i1
- 0080  BB 0006				mov bx,6	;bx = 6
- 0083  3B C3				cmp ax,bx
- 0085  7F 06				jg PART3	;если i1 > 6 то �
+ 006F  A1 0008 R			mov ax,i1	;ax = i1
+ 0072  BB 0006				mov bx,6	;bx = 6
+ 0075  3B C3				cmp ax,bx
+ 0077  7F 06				jg PART3	;если i1 > 6 то �
 				�а PART3
 				 
- 0087  A3 000C R			mov res,ax	;res = ax = i1
-Microsoft (R) Macro Assembler Version 5.10                  10/23/22 16:13:2
+ 0079  A3 000C R			mov res,ax	;res = ax = i1
+ 007C  EB 12 90				jmp ENDPART
+ 007F				PART3:
+ 007F  89 1E 000C R			mov res,bx	;res = bx = 6
+ 0083  EB 0B 90				jmp ENDPART
+				 
+Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:46:0
                                                              Page     1-3
 
 
- 008A  EB 12 90				jmp ENDPART
- 008D				PART3:
- 008D  89 1E 000C R			mov res,bx	;res = bx = 6
- 0091  EB 0B 90				jmp ENDPART
-				 
- 0094				PART4:			;если k не рав
+ 0086				PART4:			;если k не рав
 				но 0
- 0094  A1 0008 R			mov ax, i1
- 0097  03 06 000A R			add ax,i2	;ax = ax + i2
- 009B  A3 000C R			mov res,ax	;res = ax = i1 + i2
+ 0086  A1 0008 R			mov ax, i1
+ 0089  03 06 000A R			add ax,i2	;ax = ax + i2
+ 008D  A3 000C R			mov res,ax	;res = ax = i1 + i2
 				
- 009E				ENDPART:
- 009E  CD 20				int 20h
+ 0090				ENDPART:
+ 0090  CD 20				int 20h
 				 
- 00A0				Main      ENDP
- 00A0				CODE      ENDS
+ 0092				Main      ENDP
+ 0092				CODE      ENDS
 				          END Main
-Microsoft (R) Macro Assembler Version 5.10                  10/23/22 16:13:2
+Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:46:0
                                                              Symbols-1
 
 
@@ -144,7 +139,7 @@ Segments and Groups:
                 N a m e         	Length	 Align	Combine Class
 
 ASTACK . . . . . . . . . . . . .  	0040	PARA	STACK	
-CODE . . . . . . . . . . . . . .  	00A0	PARA	NONE	
+CODE . . . . . . . . . . . . . .  	0092	PARA	NONE	
 DATA . . . . . . . . . . . . . .  	000E	PARA	NONE	
 
 Symbols:            
@@ -152,14 +147,15 @@ Symbols:
                 N a m e         	Type	 Value	 Attr
 
 A  . . . . . . . . . . . . . . .  	L WORD	0002	DATA
-ABS1 . . . . . . . . . . . . . .  	L NEAR	0065	CODE
-ABS2 . . . . . . . . . . . . . .  	L NEAR	0072	CODE
+ABS1 . . . . . . . . . . . . . .  	L NEAR	0054	CODE
+ABS2 . . . . . . . . . . . . . .  	L NEAR	0068	CODE
 
 B  . . . . . . . . . . . . . . .  	L WORD	0004	DATA
 
-CHECK  . . . . . . . . . . . . .  	L NEAR	0069	CODE
+CHECK  . . . . . . . . . . . . .  	L NEAR	005F	CODE
+CHECK1 . . . . . . . . . . . . .  	L NEAR	0058	CODE
 
-ENDPART  . . . . . . . . . . . .  	L NEAR	009E	CODE
+ENDPART  . . . . . . . . . . . .  	L NEAR	0090	CODE
 
 I  . . . . . . . . . . . . . . .  	L WORD	0000	DATA
 I1 . . . . . . . . . . . . . . .  	L WORD	0008	DATA
@@ -167,13 +163,13 @@ I2 . . . . . . . . . . . . . . .  	L WORD	000A	DATA
 
 K  . . . . . . . . . . . . . . .  	L WORD	0006	DATA
 
-MAIN . . . . . . . . . . . . . .  	F PROC	0000	CODE	Length = 00A0
+MAIN . . . . . . . . . . . . . .  	F PROC	0000	CODE	Length = 0092
 
-PART1  . . . . . . . . . . . . .  	L NEAR	003F	CODE
-PART2  . . . . . . . . . . . . .  	L NEAR	0059	CODE
-PART21 . . . . . . . . . . . . .  	L NEAR	0076	CODE
-PART3  . . . . . . . . . . . . .  	L NEAR	008D	CODE
-PART4  . . . . . . . . . . . . .  	L NEAR	0094	CODE
+PART1  . . . . . . . . . . . . .  	L NEAR	0035	CODE
+PART2  . . . . . . . . . . . . .  	L NEAR	004B	CODE
+PART21 . . . . . . . . . . . . .  	L NEAR	006F	CODE
+PART3  . . . . . . . . . . . . .  	L NEAR	007F	CODE
+PART4  . . . . . . . . . . . . .  	L NEAR	0086	CODE
 
 RES  . . . . . . . . . . . . . .  	L WORD	000C	DATA
 
@@ -181,12 +177,16 @@ RES  . . . . . . . . . . . . . .  	L WORD	000C	DATA
 @FILENAME  . . . . . . . . . . .  	TEXT  lab3		
 @VERSION . . . . . . . . . . . .  	TEXT  510		
 
+Microsoft (R) Macro Assembler Version 5.10                  10/31/22 09:46:0
+                                                             Symbols-2
+
+
 
-    111 Source  Lines
-    111 Total   Lines
-     25 Symbols
+    106 Source  Lines
+    106 Total   Lines
+     26 Symbols
 
-  47982 + 459278 Bytes symbol space free
+  48018 + 461289 Bytes symbol space free
 
       0 Warning Errors
       0 Severe  Errors

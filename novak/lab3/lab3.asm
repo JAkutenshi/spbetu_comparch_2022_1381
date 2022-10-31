@@ -6,10 +6,10 @@ AStack    ENDS
  
 DATA      SEGMENT
  
-i	DW	0
-a 	DW 	0
-b	DW	0
-k	DW	0
+i	DW	-6
+a 	DW 	2
+b	DW	4
+k	DW	5
  
 i1	DW	0		;f1
 i2	DW	0		;f2
@@ -26,8 +26,8 @@ Main      PROC  FAR
 ;Вычисление f1 и f2
 	mov ax,a	;ax = a
 	mov cx,i	;cx = i
-	mov dx,b	;dx = b
-	cmp ax,dx	;Сравнение значений a и b	
+	cmp ax,b	;Сравнение значений a и b
+	mov dx,b	;dx = b	
 	jg PART1	;если a>b то на PART1
  
 	;если a<=b:
@@ -40,12 +40,8 @@ Main      PROC  FAR
 	sub ax,cx	;ax = 8 - 6i	
 	mov i1,ax	;i1(f1) = ax = 8 - 6i
  
-	mov cx,i	;cx = i
-	mov dx, i	;dx = i
-	sal dx,1	;dx = 2i
-	add cx,dx	;cx = i + 2i = 3i
-	mov ax, 10	;ax = 10
-	sub ax, cx	;ax = ax - cx = 10 - 3i
+	sar ax,1	;ax = ax/2 = 4-3i
+	add ax,6	;ax = ax+6 = 10-3i
 	mov i2,ax	;i2(f2) = ax = 10 - 3i
 	jmp PART2	;идем на PART2
  
@@ -57,35 +53,34 @@ PART1:			;если a>b
 	sub ax,cx	;ax = ax - cx = 7 - 4i
 	mov i1,ax	;i1(f1) = ax = 7 - 4i
  
-	mov ax,-5	;ax = -5
-	add ax,cx	;ax = ax + cx = 4i - 5
-	neg ax		;ax = -(4i - 5)
+	sub ax,2	;ax = ax-2 = 7-4i-2 = 5-4i
 	mov i2,ax	;i2(f2) = cx = -(4i - 5)
  
 ;Вычисление f3
 PART2:
 	mov bx,0
 	cmp bx,i1	
-	jg ABS1		;если 0 > i1, то на ABS1
-	jmp CHECK	;иначе идем на CHECK
+	jbe CHECK1	;если 0 <= i1, то на CHECK1
 	
 ABS1:
 	neg i1
 
-CHECK:
-	cmp bx,i2
-	jg ABS2		;если 0 > i2, то на ABS2
-	jmp PART21	;иначе идём на PART21
-
-ABS2:
-	neg i2
-
-PART21:
+CHECK1:
 	mov ax,k
  
 	cmp ax,bx	;сравниваем k и 0
-	jne PART4	;если k не равно 0, то на PART4
- 	
+	je PART21	;если k равно 0, то на PART21
+
+CHECK:
+	cmp bx,i2
+	jg ABS2		;если 0 > i2, то на ABS2
+	jmp PART4	;иначе идём на PART4
+
+ABS2:
+	neg i2
+	jmp PART4
+
+PART21:	
 			;если к = 0
 	mov ax,i1	;ax = i1
 	mov bx,6	;bx = 6
