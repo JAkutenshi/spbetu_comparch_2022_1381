@@ -19,13 +19,11 @@ func1:    ; a<=b
 	mov ax, i    ; i
 	shl ax, 1    ; 2i
 	add ax, i    ; 3i
+	mov cx, ax   ; 3i
 	shl ax, 1    ; 6i
 	sub ax, 6    ; 6i-6
 	neg ax       ; -(6i-6)
 
-	mov cx, i    ; i
-	shl cx, 1    ; 2i
-	add cx, i    ; 3i
 	neg cx       ; -3i
 	add cx, 12   ; 9-3(i-1)
 	jmp func3
@@ -60,7 +58,6 @@ max:     ; k>=0
 	cmp cx, 7 
 	jge result
 	mov cx, 7
-	jmp result
 
 result: 
 	mov res, cx
