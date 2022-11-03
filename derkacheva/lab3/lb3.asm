@@ -53,27 +53,33 @@ f1_f2_end:
 f3:
     mov ax, k    
     cmp ax, 0h
-    jge k_more_0
-k_less_0_1:
     mov ax, i1
     cmp ax, 0h
+    jge k_more_0
+
+k_less_0_1:
+    ;mov ax, i1
+    ;cmp ax, 0h
     jge k_less_0_2
     neg ax
+
 k_less_0_2:
     mov bx, i2
     cmp bx, 0h
     jge k_less_0_3
     neg bx
+
 k_less_0_3:
     add ax, bx
     cmp ax, 0h
     jmp f3_end
     
 k_more_0:
-    mov ax, i1
-    cmp ax, 0h
+    ;mov ax, i1
+    ;cmp ax, 0h
     jge abs_i1
     neg ax
+
 abs_i1:
     cmp ax, 6h
     jge f3_end
