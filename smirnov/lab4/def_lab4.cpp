@@ -2,8 +2,9 @@
 #include <fstream>
 
 char input_str[81]; // Входная строчка
-int letters[26] = {0}; // Массив вхождений букв (если буква есть в строке 0 меняется на её индекс)
-int counter = -1; // индекс массива letters
+int letters[26] = { 0 }; // Массив вхождений букв (если буква есть в строке 0 меняется на её индекс)
+int apperance[26] = { 0 }; // Массив подсчет букв
+int counter = -1; // индекс массива letters и apperance
 
 // Вариант 12. Формирование номера введенной латинской буквы по алфавиту
 // и номера позиции его первого вхождения во входной строке и выдача их на экран.
@@ -23,34 +24,37 @@ int main() {
             mov esi, offset input_str // адрес начала строки
             inc ah // Ищем следующий латинский символ
             inc counter // увеличиваем индекс letters
-            sub ecx, ecx // очищаем ecx
+            sub ecx, ecx
     loop_:
-            sub al, al // очищаем al
-            lodsb // загружаем символ из строки input_str в al
-            inc ecx // увеличиваем кол-во считанных символов
-            cmp al, '\0' // если строка закончилась идем на метку check_last_letter
+            sub al, al
+            lodsb
+            inc ecx
+            cmp al, '\0'
             je check_last_letter
     check_letter:
             cmp al, ah
-            je write_index // найден прописной символ
+            je write_index // записываем вхождение прописного символа
 
             mov bh, ah
-            sub bh, 32
+            sub bh, 32 // Вычисляем заглавную символа
             cmp al, bh
-            je write_index // найден заглавный символ
+            je write_index // записываем вхождение заглавного символа
 
             jmp check_last_letter
-            
+
     write_index:
             mov edi, counter
-            mov ES:letters[edi * 4], ecx // записываем номер вхождения символа (маштабируем в 4 раза тк массив типа int)
-            jmp loop_s // начинаем новую итерацию цикла
+            cmp ES:letters[edi * 4], 0 // если символ уже был увеличиваем кол-во его вхождений
+            jne second_app
+            mov ES:letters[edi * 4], ecx // записываем номер первого вхождения (маштабируем в 4 раза тк массив типа int)
+    second_app:
+            inc ES:apperance[edi * 4] // увеличиваем кол-во вхождений символа
     check_last_letter:
             cmp ah, 'z' // если дошли до z завершаем
             je final // метка на конец вставки
-            cmp al, '\0' // строка закончилась начинаем новый цикл
-            je loop_s // метка на начало цикла
-            jmp loop_ // продолжаем считывание строки
+            cmp al, '\0'
+            je loop_s // строка закончилась начинаем заново считывать
+            jmp loop_ // строка не закончилась продолжаем считывать
 
     final:
     };
@@ -59,8 +63,8 @@ int main() {
     for (int i = 0; i < 26; i++)
     {
         if (letters[i] != 0) {
-            std::cout << i + 1 << " " << letters[i] << std::endl;
-            file << i + 1 << " " << letters[i] << std::endl;
+            std::cout << i + 1 << " " << letters[i] << " " << apperance[i] << std::endl;
+            file << i + 1 << " " << letters[i] << " " << apperance[i] << std::endl;
         }
     }
     file.close();
