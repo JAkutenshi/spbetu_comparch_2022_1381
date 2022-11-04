@@ -1,0 +1,142 @@
+Microsoft (R) Macro Assembler Version 5.10                  11/4/22 13:11:32
+                                                             Page     1-1
+
+
+ 0000				AStack SEGMENT STACK
+ 0000  000C[				DW 12 DUP(?)
+	   ????			
+			 ]	
+				
+ 0018				AStack ENDS
+ 0000				DATA SEGMENT
+ 0000  0002				a DW 2
+ 0002  0005				b DW 5
+ 0004  0005				i DW 5
+ 0006  0001				k DW 1
+ 0008  0000				i1 DW ?
+ 000A  0000				i2 DW ?
+ 000C  0000				res DW ?
+ 000E				DATA ENDS
+ 0000				CODE SEGMENT
+					ASSUME CS:CODE, DS:DATA, SS:AStack
+ 0000				Main PROC FAR
+ 0000  1E				push ds
+ 0001  2B C0				sub ax,ax
+ 0003  50				push ax
+ 0004  B8 ---- R			mov ax,DATA
+ 0007  8E D8				mov ds,ax
+ 0009				f12:
+ 0009  A1 0004 R			mov ax,i
+ 000C  03 06 0004 R			add ax,i
+ 0010  D1 E0				shl ax,1;a=4*i
+ 0012  8B 0E 0000 R		    mov cx,a
+ 0016  3B 0E 0002 R		    cmp cx,b
+ 001A  7E 21			    jle f12step2;a<=b
+ 001C				f12step1:
+					;f1=-(4*i+3)
+ 001C  A3 0008 R			mov i1,ax
+ 001F  83 06 0008 R 03			add i1,3
+ 0024  F7 1E 0008 R			neg i1
+ 0028  8B 16 0008 R			mov dx,i1
+					;f2=20-4*i		
+ 002C  C7 06 000A R 0014		mov i2,20
+ 0032  29 06 000A R			sub i2,ax
+ 0036  8B 16 000A R			mov dx,i2
+ 003A  EB 23 90				jmp f3
+ 003D				f12step2:
+				    ;f1=6*i-10
+ 003D  2B 06 0004 R			sub ax,i
+ 0041  D1 E0				shl ax,1
+ 0043  A3 0008 R			mov i1,ax
+ 0046  83 2E 0008 R 0A			sub i1,10
+ 004B  8B 16 0008 R			mov dx,i1
+				    ;f2=-(6*i-4)
+ 004F  A3 000A R			mov i2,ax
+ 0052  83 2E 000A R 06			sub i2,6
+ 0057  F7 1E 000A R			neg i2
+ 005B  8B 16 000A R			mov dx,i2
+ 005F				f3:
+Microsoft (R) Macro Assembler Version 5.10                  11/4/22 13:11:32
+                                                             Page     1-2
+
+
+ 005F  8B 1E 0008 R			mov bx,i1
+ 0063  2B 1E 000A R			sub bx,i2
+ 0067  83 FB 00				cmp bx,0
+ 006A  7D 02				jge f3step1 ;i1>=0
+ 006C  F7 DB				neg bx
+ 006E				f3step1:
+ 006E  83 3E 000A R 00			cmp i2,0
+ 0073  7D 04				jge f3step2 ;i2>=0
+ 0075  F7 1E 000A R			neg i2
+ 0079				f3step2:
+ 0079  83 3E 0006 R 00			cmp k,0
+ 007E  7D 05				jge f3step3 ; k>=0
+ 0080  8B C3				mov ax,bx
+ 0082  EB 11 90				jmp f3end
+ 0085				f3step3:
+ 0085  83 3E 000A R 07			cmp i2,7
+ 008A  7D 06				jge max4 
+ 008C  B8 0007				mov ax,7	
+ 008F  EB 04 90				jmp f3end
+ 0092				max4:
+ 0092  A1 000A R			mov ax,i2
+ 0095				f3end:
+ 0095  A3 000C R			mov res,ax
+ 0098  CB				ret
+ 0099				Main	ENDP
+ 0099				CODE    ENDS
+				END Main
+Microsoft (R) Macro Assembler Version 5.10                  11/4/22 13:11:32
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+ASTACK . . . . . . . . . . . . .  	0018	PARA	STACK	
+CODE . . . . . . . . . . . . . .  	0099	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	000E	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+A  . . . . . . . . . . . . . . .  	L WORD	0000	DATA
+
+B  . . . . . . . . . . . . . . .  	L WORD	0002	DATA
+
+F12  . . . . . . . . . . . . . .  	L NEAR	0009	CODE
+F12STEP1 . . . . . . . . . . . .  	L NEAR	001C	CODE
+F12STEP2 . . . . . . . . . . . .  	L NEAR	003D	CODE
+F3 . . . . . . . . . . . . . . .  	L NEAR	005F	CODE
+F3END  . . . . . . . . . . . . .  	L NEAR	0095	CODE
+F3STEP1  . . . . . . . . . . . .  	L NEAR	006E	CODE
+F3STEP2  . . . . . . . . . . . .  	L NEAR	0079	CODE
+F3STEP3  . . . . . . . . . . . .  	L NEAR	0085	CODE
+
+I  . . . . . . . . . . . . . . .  	L WORD	0004	DATA
+I1 . . . . . . . . . . . . . . .  	L WORD	0008	DATA
+I2 . . . . . . . . . . . . . . .  	L WORD	000A	DATA
+
+K  . . . . . . . . . . . . . . .  	L WORD	0006	DATA
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0000	CODE	Length = 0099
+MAX4 . . . . . . . . . . . . . .  	L NEAR	0092	CODE
+
+RES  . . . . . . . . . . . . . .  	L WORD	000C	DATA
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  LAB3		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     78 Source  Lines
+     78 Total   Lines
+     25 Symbols
+
+  48056 + 461251 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
