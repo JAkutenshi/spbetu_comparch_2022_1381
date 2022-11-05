@@ -1,0 +1,118 @@
+Microsoft (R) Macro Assembler Version 5.10                  11/5/22 19:18:41
+                                                             Page     1-1
+
+
+				dosseg
+				.model small
+				.stack 100h
+				.data
+ 0000  0001			i dw 1
+ 0002  FFFB			a dw -5
+ 0004  0008			b dw 8
+ 0006  0004			k dw 4
+ 0008  0000			res dw ?
+				.code
+ 0000  B8 ---- R		mov ax, @data
+ 0003  8E D8			mov ds, ax
+ 0005  A1 0002 R		mov ax, a
+ 0008  3B 06 0004 R		cmp ax, b  ;сравниваем a и b.
+ 000C  7F 16			jg f12_else  ;выполняет коротки
+				й переход, если a больше b
+				
+ 000E				f12_that:    ;if(a<=b) 
+ 000E  8B C9			mov cx, cx ;3i+4
+ 0010  83 C1 02			add cx, 2  ;3*(i+2)
+				
+ 0013  A1 0000 R		mov ax, i ;i
+ 0016  03 06 0000 R		add ax, i ;2i
+ 001A  03 06 0000 R		add ax, i ;3i
+ 001E  05 0004			add ax, 4 ;3i+4
+ 0021  EB 17 90			jmp final
+				
+ 0024				f12_else:    ;if(a>b)
+ 0024  8B C9			mov cx, cx ;15-2i
+ 0026  2B 0E 0000 R		sub cx, i  ;15-3i
+ 002A  D1 E1			sal cx, 1  ;30-6i
+ 002C  83 E9 1A			sub cx, 26 ;-(6i-4) = -6i+4
+				
+ 002F  B8 000F			mov ax, 15  ;15
+ 0032  2B 06 0000 R		sub ax, i  ;15-i
+ 0036  2B 06 0000 R		sub ax, i  ;15-2i
+				  
+				
+ 003A				final:
+ 003A				abs_that:
+ 003A  83 3E 0006 R 00		cmp k,0
+ 003F  75 09			jnz abs_else
+ 0041  03 C1			add ax, cx
+ 0043  F7 D8			neg ax
+ 0045  78 F3			js abs_that
+ 0047  EB 0A 90			jmp results
+				
+ 004A				abs_else:
+ 004A  3B C8			cmp cx, ax
+ 004C  7C 03			jl min
+ 004E  EB 03 90			jmp results
+ 0051  8B C1			min: mov ax, cx
+				
+ 0053				results: 
+Microsoft (R) Macro Assembler Version 5.10                  11/5/22 19:18:41
+                                                             Page     1-2
+
+
+ 0053  A3 0008 R		mov res, ax
+ 0056  B4 4C			mov ah, 4ch
+ 0058  CD 21			int 21h
+				end
+Microsoft (R) Macro Assembler Version 5.10                  11/5/22 19:18:41
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	000A	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	005A	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+A  . . . . . . . . . . . . . . .  	L WORD	0002	_DATA
+ABS_ELSE . . . . . . . . . . . .  	L NEAR	004A	_TEXT
+ABS_THAT . . . . . . . . . . . .  	L NEAR	003A	_TEXT
+
+B  . . . . . . . . . . . . . . .  	L WORD	0004	_DATA
+
+F12_ELSE . . . . . . . . . . . .  	L NEAR	0024	_TEXT
+F12_THAT . . . . . . . . . . . .  	L NEAR	000E	_TEXT
+FINAL  . . . . . . . . . . . . .  	L NEAR	003A	_TEXT
+
+I  . . . . . . . . . . . . . . .  	L WORD	0000	_DATA
+
+K  . . . . . . . . . . . . . . .  	L WORD	0006	_DATA
+
+MIN  . . . . . . . . . . . . . .  	L NEAR	0051	_TEXT
+
+RES  . . . . . . . . . . . . . .  	L WORD	0008	_DATA
+RESULTS  . . . . . . . . . . . .  	L NEAR	0053	_TEXT
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  lr3		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     57 Source  Lines
+     57 Total   Lines
+     29 Symbols
+
+  48004 + 459256 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
