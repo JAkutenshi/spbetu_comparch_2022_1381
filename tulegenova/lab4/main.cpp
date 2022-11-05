@@ -23,8 +23,8 @@ int main() {
         mov esi, offset istr
         mov edi, offset ostr
 
-        check :
-        lodsb
+        readsym:
+            lodsb
 
             cmp al, '\0'
             je stop
@@ -46,22 +46,22 @@ int main() {
             cmp al, 'Я'
             jg writesym
 
-            yo :
-        add al, 16
+        yo:
+            add al, 16
             jmp writesym
 
-            change :
-        add al, 32
+        change:
+            add al, 32
             jmp writesym
 
-            inverse :
-        neg al
+        inverse:
+            neg al
             add al, 105
 
-            writesym :
+        writesym:
             stosb
-            jmp check
-            stop :
+            jmp readsym
+            stop:
     };
 
     std::cout << "Итог: " << ostr;
