@@ -7,7 +7,7 @@ int main() {
     char* output = (char*) calloc(char_max, sizeof(char));
     FILE *file;
 
-    scanf("%s", input);
+    fgets(input, char_max, stdin);
 
     puts(" Преобразование всех строчных латинских букв входной строк"
          "в заглавные, а десятичных цифр в инверсные,\nостальные символы входной "
