@@ -51,6 +51,8 @@ int main() {
     fprintf(file, "%s", output);
     fclose(file);
     printf("%s\n", output);
+    
+    free(input);
 
     return 0;
 }
