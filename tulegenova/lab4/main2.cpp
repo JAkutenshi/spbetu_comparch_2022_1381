@@ -15,13 +15,13 @@ int main() {
     std::cin.getline(istr, 81);
 
     std::ofstream file("out.txt");
+    short int sum = 0;
 
     __asm {
         push ds
         pop es
         mov esi, offset istr
         mov edi, offset ostr
-        mov cl, 0
 
         check :
             lodsb
@@ -54,19 +54,20 @@ int main() {
         inverse :
             neg al
             add al, 105
-            add cl, al - 48
+            mov ch, 0
+            sub al, 48
+            mov cl, al
+            add sum, cx
+            add al, 48
 
         writesym :
             stosb
             jmp check
+
         stop :
-            mov al, 32
-            stosb
-            mov al, cl
-            stosb
     };
 
-    std::cout << "Итог: " << ostr;
+    std::cout << "Итог: " << ostr << "\n" << sum;
     file << ostr;
     file.close();
 
