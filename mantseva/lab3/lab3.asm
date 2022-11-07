@@ -18,60 +18,54 @@ CODE SEGMENT
 Main    PROC FAR
     	push ds
     	push ax
-		mov ax, DATA
-		mov ds, ax
+	mov ax, DATA
+	mov ds, ax
 function12:
     	mov ax, a
-		mov bx, i
-		shl bx, 1
-		mov cx, i
-		add cx, bx
-		cmp ax, b
-		jg greater_a
+	mov bx, i
+	shl bx, 1
+	mov cx, i
+	add cx, bx
+	cmp ax, b
+	jg greater_a
 greater_b:
     	mov bx,cx
-		add cx, 6
-		shl bx, 1
-		sub bx, 10
-		jmp function12_end
+	add cx, 6
+	shl bx, 1
+	sub bx, 10
+	jmp function12_end
 greater_a:
     	shl bx, 1
     	neg bx
     	sub bx, 3
-		shl cx, 1
-		neg cx
-		add cx, 4
+	shl cx, 1
+	neg cx
+	add cx, 4
 function12_end:
-		mov i1, bx
-		mov i2, cx
+	mov i1, bx
+	mov i2, cx
+	mov ax, i1
+	cmp ax, 0
+    	jge function3
+	neg ax
 function3:
-		cmp k, 0
-		jge positive_k
+	cmp k, 0
+	jge positive_k
 negative_k:
-		mov ax, i1
-		cmp ax, 0
-    	jge positive_i1
-		neg ax
-positive_i1:
-		mov bx, i2
-		cmp bx, 0
+	mov bx, i2
+	cmp bx, 0
     	jge positive_i2
-		neg bx
+	neg bx
 positive_i2:
-		add ax, bx
-		jmp function3_end
+	add ax, bx
+	jmp function3_end
 positive_k:
-		mov ax, i1
-		cmp ax, 0
-		jge pos_i1
-		neg ax
-pos_i1:
-		cmp ax, 6
-		jge function3_end
-		mov ax, 6
+	cmp ax, 6
+	jge function3_end
+	mov ax, 6
 function3_end:
-		mov result, ax
-		ret
+	mov result, ax
+	ret
 Main    ENDP
 CODE    ENDS
-	    END Main
+	END Main
