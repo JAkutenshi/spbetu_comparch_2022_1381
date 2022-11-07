@@ -9,7 +9,6 @@ int main() {
 
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
-    setlocale(LC_CTYPE, "rus");
 
     std::cout << "Тулегенова Алиса 1381.\nВариант 25. Инвертирование введенных во входной строке цифр в десятичной СС\n и преобразование заглавных русских букв в строчные,\n остальные символы входной строки передаются в выходную строку непосредственно.\n";
     std::cout << "Введите строку: ";
@@ -23,9 +22,8 @@ int main() {
         mov esi, offset istr
         mov edi, offset ostr
 
-        readsym:
+        check :
             lodsb
-
             cmp al, '\0'
             je stop
 
@@ -33,8 +31,6 @@ int main() {
             jb writesym
             cmp al, '9'
             jbe inverse
-            cmp al, '9'
-            jg writesym
 
             cmp al, 'Ё'
             je yo
@@ -46,22 +42,22 @@ int main() {
             cmp al, 'Я'
             jg writesym
 
-        yo:
+        yo :
             add al, 16
             jmp writesym
 
-        change:
+        change :
             add al, 32
             jmp writesym
 
-        inverse:
+        inverse :
             neg al
             add al, 105
 
-        writesym:
+        writesym :
             stosb
-            jmp readsym
-            stop:
+            jmp check
+        stop :
     };
 
     std::cout << "Итог: " << ostr;
