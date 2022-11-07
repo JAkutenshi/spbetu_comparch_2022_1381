@@ -44,10 +44,8 @@ int main() {
             save:
             sub al, 97
             neg al
-            add al, dl
+            add al, 90
                
-            xor al, 20h
-
             jmp writedown
          reverse:
             neg al
