@@ -43,6 +43,20 @@ int main() {
             stosb
             jmp read
 
+        write_word:
+            mov ch, 0
+            sub al, '0'
+            mov cl, al
+            add count, cx
+            add al, '0'
+
+            mov ch, 0
+            sub ah, '0'
+            mov cl, ah
+            add count, cx
+            add ah, '0'
+            jmp read
+
         write_num:
             mov ch, 0
             sub al, '0'
@@ -60,7 +74,7 @@ int main() {
             jge write3
             sub al, 'A'
             add al, 31h
-            jmp write
+            jmp write_num
 
         write3 :
             cmp al, 'T'
@@ -70,7 +84,7 @@ int main() {
             add ah, 30h
             mov al, '1'
             stosw
-            jmp read
+            jmp write_word
 
         write4 :
             mov ah, al
@@ -78,8 +92,10 @@ int main() {
             add ah, 30h
             mov al, '2'
             stosw
-            jmp read
+            jmp write_word
          end :
+
+            
            
 
 	}
