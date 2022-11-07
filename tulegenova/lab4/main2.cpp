@@ -53,9 +53,8 @@ int main() {
 
         inverse :
             neg al
-            add al, 105
+            add al, 57
             mov ch, 0
-            sub al, 48
             mov cl, al
             add sum, cx
             add al, 48
