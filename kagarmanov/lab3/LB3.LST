@@ -1,0 +1,178 @@
+Microsoft (R) Macro Assembler Version 5.10                  11/8/22 02:24:25
+                                                             Page     1-1
+
+
+				; a > b:
+				;	i_1 = -4i - 3
+				;	i_2 = i_1 +2*i - 7
+				;
+				;a <= b:
+				;	i_1 = 6i - 10
+				;	i_2 = i_1 / 2  + 11
+				;
+				DOSSEG
+				.MODEL SMALL
+				.STACK  100H
+				.DATA 
+ 0000  FE				a db -2
+ 0001  04				b db  4
+ 0002  FA				i db -6
+ 0003  05				k db  5
+ 0004  00				i_2 db ? ; значение перво�
+				� функции == i1
+ 0005  00				i_4 db ? ; значение второ�
+				� функции == i2
+ 0006  00				res db 0
+				.CODE 
+ 0000  B8 ---- R			mov ax, @data
+ 0003  8E D8				mov ds, ax
+ 0005  A0 0000 R			mov al, a
+ 0008  3A 06 0001 R			cmp al, b
+ 000C  7E 23				jle ElsePart
+					; f2
+ 000E  A0 0002 R			mov al, i ; i
+ 0011  D0 E0				shl al, 1 ; 2*i
+ 0013  D0 E0				shl al, 1 ; 4*i
+ 0015  04 03				add al, 3 ; 4*i + 3
+ 0017  F6 D8				neg al ;    -(4*i + 3) = -4*i - 3
+ 0019  A2 0004 R			mov i_2, al; al = i_2
+					; f4
+ 001C  2A 06 0002 R			sub al, i ; -5*i - 3
+ 0020  2A 06 0002 R			sub al, i ; -6*i - 3
+ 0024  04 07				add al, 7 ; -6*i + 4
+ 0026  A2 0005 R			mov i_4, al
+ 0029  80 3E 0003 R 00			cmp k, 0
+ 002E  EB 2C 90				jmp f7
+					
+ 0031					ElsePart:
+					;f2
+ 0031  A0 0002 R				mov al, i ; i
+ 0034  8A 1E 0002 R				mov bl, i ; i
+ 0038  D0 E0					shl al, 1 ; 2*i
+ 003A  D0 E0					shl al, 1 ; 4*i
+ 003C  D0 E3					shl bl, 1 ; 2*i 
+ 003E  02 C3					add al, bl; 6*i
+ 0040  2C 0A					sub al, 10; 6*i - 10
+ 0042  A2 0004 R				mov i_2, al
+					;f4	
+ 0045  A8 80					test al, 10000000b ; прове
+Microsoft (R) Macro Assembler Version 5.10                  11/8/22 02:24:25
+                                                             Page     1-2
+
+
+				ряем знаковый бит
+ 0047  75 0A					jnz negative ; если чис�
+				�о отрицательное, то при с�
+				�виге вправо нужно вернут�
+				� знаковый бит
+ 0049  D0 E8					shr al, 1 ; 3*i - 5
+ 004B  04 0B					add al, 11 ; 3*i + 6 
+ 004D  A2 0005 R				mov i_4, al
+ 0050  EB 0A 90					jmp f7
+ 0053						negative:
+ 0053  D0 E8						shr al, 1 
+ 0055  04 80						add al, 10000000b ; в�
+				�звращаем знаковый бит от�
+				�ицательному числу, потер�
+				�нному при сдвиге
+ 0057  04 0B						add al, 11
+ 0059  A2 0005 R					mov i_4, al
+ 005C					f7:
+ 005C  A0 0004 R				mov al, i_2
+ 005F  8A 1E 0005 R				mov bl, i_4
+						
+ 0063						getabs2: 
+ 0063  F6 D8					neg al
+ 0065  78 FC					js getabs2 ; меняем у ч
+				исла i_2 знак до тех пор, по�
+				�а оно не станет положител
+				ьным
+						
+ 0067						getabs4:
+ 0067  F6 DB					neg bl
+ 0069  78 FC					js getabs4
+						
+ 006B  8A 0E 0003 R				mov cl, k
+ 006F  80 F9 00					cmp cl, 0
+ 0072  7D 0B					jge ElsePart_Final
+ 0074  00 06 0006 R				add res, al
+ 0078  00 1E 0006 R				add res, bl
+ 007C  EB 13 90					jmp Ending
+					
+ 007F					ElsePart_Final:
+ 007F  3C 06					cmp al, 6
+ 0081  7C 06					jl min
+ 0083  A2 0006 R				mov res, al
+ 0086  EB 09 90					jmp Ending
+ 0089					min:
+ 0089  C6 06 0006 R 06				mov res, 6
+ 008E  EB 01 90					jmp Ending
+ 0091					Ending:
+ 0091  A0 0004 R			mov al, i_2
+ 0094  8A 1E 0005 R			mov bl, i_4
+ 0098  8A 0E 0006 R			mov cl, res
+ 009C  B4 4C				mov ah, 4ch
+ 009E  CD 21				int 21h
+				END
+Microsoft (R) Macro Assembler Version 5.10                  11/8/22 02:24:25
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	0007	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	00A0	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+A  . . . . . . . . . . . . . . .  	L BYTE	0000	_DATA
+
+B  . . . . . . . . . . . . . . .  	L BYTE	0001	_DATA
+
+ELSEPART . . . . . . . . . . . .  	L NEAR	0031	_TEXT
+ELSEPART_FINAL . . . . . . . . .  	L NEAR	007F	_TEXT
+ENDING . . . . . . . . . . . . .  	L NEAR	0091	_TEXT
+
+F7 . . . . . . . . . . . . . . .  	L NEAR	005C	_TEXT
+
+GETABS2  . . . . . . . . . . . .  	L NEAR	0063	_TEXT
+GETABS4  . . . . . . . . . . . .  	L NEAR	0067	_TEXT
+
+I  . . . . . . . . . . . . . . .  	L BYTE	0002	_DATA
+I_2  . . . . . . . . . . . . . .  	L BYTE	0004	_DATA
+I_4  . . . . . . . . . . . . . .  	L BYTE	0005	_DATA
+
+K  . . . . . . . . . . . . . . .  	L BYTE	0003	_DATA
+
+MIN  . . . . . . . . . . . . . .  	L NEAR	0089	_TEXT
+
+NEGATIVE . . . . . . . . . . . .  	L NEAR	0053	_TEXT
+
+RES  . . . . . . . . . . . . . .  	L BYTE	0006	_DATA
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  LB3		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+Microsoft (R) Macro Assembler Version 5.10                  11/8/22 02:24:25
+                                                             Symbols-2
+
+
+
+     96 Source  Lines
+     96 Total   Lines
+     32 Symbols
+
+  48022 + 459238 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
