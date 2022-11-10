@@ -37,9 +37,6 @@ int main() {
 
         "next: \n"
         "\t inc %[idx] \n"
-        //"\t cmp %%al, '\0' \n"
-        //"\t je end \n"
-        //"\t jmp check_letter \n"
         "\t loop check_letter \n"
 
         "end: \n"
