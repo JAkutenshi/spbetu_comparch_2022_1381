@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 5.10                  11/5/22 19:18:41
+Microsoft (R) Macro Assembler Version 5.10                  11/13/22 19:56:0
                                                              Page     1-1
 
 
@@ -16,55 +16,55 @@
  0003  8E D8			mov ds, ax
  0005  A1 0002 R		mov ax, a
  0008  3B 06 0004 R		cmp ax, b  ;сравниваем a и b.
- 000C  7F 16			jg f12_else  ;выполняет коротки
+ 000C  7F 17			jg f12_else  ;выполняет коротки
 				й переход, если a больше b
 				
  000E				f12_that:    ;if(a<=b) 
- 000E  8B C9			mov cx, cx ;3i+4
- 0010  83 C1 02			add cx, 2  ;3*(i+2)
+ 000E  8B 0E 0000 R		mov cx, i ;i
+ 0012  03 0E 0000 R		add cx, i ;2i
+ 0016  03 0E 0000 R		add cx, i ;3i
+ 001A  83 C1 04			add cx, 4 ;3i+4
 				
- 0013  A1 0000 R		mov ax, i ;i
- 0016  03 06 0000 R		add ax, i ;2i
- 001A  03 06 0000 R		add ax, i ;3i
- 001E  05 0004			add ax, 4 ;3i+4
- 0021  EB 17 90			jmp final
+ 001D  8B C1			mov ax, cx ;3i+4
+ 001F  05 0002			add ax, 2  ;3*(i+2) = 3i+6
+ 0022  EB 17 90			jmp final
 				
- 0024				f12_else:    ;if(a>b)
- 0024  8B C9			mov cx, cx ;15-2i
- 0026  2B 0E 0000 R		sub cx, i  ;15-3i
- 002A  D1 E1			sal cx, 1  ;30-6i
- 002C  83 E9 1A			sub cx, 26 ;-(6i-4) = -6i+4
+ 0025				f12_else:    ;if(a>b)
+ 0025  B9 000F			mov cx, 15  ;15
+ 0028  2B 0E 0000 R		sub cx, i  ;15-i
+ 002C  2B 0E 0000 R		sub cx, i  ;15-2i
 				
- 002F  B8 000F			mov ax, 15  ;15
- 0032  2B 06 0000 R		sub ax, i  ;15-i
- 0036  2B 06 0000 R		sub ax, i  ;15-2i
+ 0030  8B C1			mov ax, cx ;15-2i
+ 0032  2B 06 0000 R		sub ax, i  ;15-3i
+ 0036  D1 E0			sal ax, 1  ;30-6i
+ 0038  2D 001A			sub ax, 26 ;-(6i-4) = -6i+4
 				  
+ 003B				final:
+ 003B				abs_that:
+ 003B  83 3E 0006 R 00		cmp k,0
+ 0040  75 07			jnz abs_else ;перейти если не ра
+				вно
+ 0042  03 C1			add ax, cx
+ 0044  F7 D8			neg ax
+ 0046  EB 0A 90			jmp results
 				
- 003A				final:
- 003A				abs_that:
- 003A  83 3E 0006 R 00		cmp k,0
- 003F  75 09			jnz abs_else
- 0041  03 C1			add ax, cx
- 0043  F7 D8			neg ax
- 0045  78 F3			js abs_that
- 0047  EB 0A 90			jmp results
+ 0049				abs_else:
+ 0049  3B C8			cmp cx, ax ;сравниваем i1 и i2
+ 004B  7C 03			jl min
+ 004D  EB 03 90			jmp results
 				
- 004A				abs_else:
- 004A  3B C8			cmp cx, ax
- 004C  7C 03			jl min
- 004E  EB 03 90			jmp results
- 0051  8B C1			min: mov ax, cx
+ 0050  8B C1			min: mov ax, cx
 				
- 0053				results: 
-Microsoft (R) Macro Assembler Version 5.10                  11/5/22 19:18:41
+ 0052				results: 
+Microsoft (R) Macro Assembler Version 5.10                  11/13/22 19:56:0
                                                              Page     1-2
 
 
- 0053  A3 0008 R		mov res, ax
- 0056  B4 4C			mov ah, 4ch
- 0058  CD 21			int 21h
+ 0052  A3 0008 R		mov res, ax
+ 0055  B4 4C			mov ah, 4ch
+ 0057  CD 21			int 21h
 				end
-Microsoft (R) Macro Assembler Version 5.10                  11/5/22 19:18:41
+Microsoft (R) Macro Assembler Version 5.10                  11/13/22 19:56:0
                                                              Symbols-1
 
 
@@ -75,30 +75,30 @@ Segments and Groups:
 DGROUP . . . . . . . . . . . . .  	GROUP
   _DATA  . . . . . . . . . . . .  	000A	WORD	PUBLIC	'DATA'
   STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
-_TEXT  . . . . . . . . . . . . .  	005A	WORD	PUBLIC	'CODE'
+_TEXT  . . . . . . . . . . . . .  	0059	WORD	PUBLIC	'CODE'
 
 Symbols:            
 
                 N a m e         	Type	 Value	 Attr
 
 A  . . . . . . . . . . . . . . .  	L WORD	0002	_DATA
-ABS_ELSE . . . . . . . . . . . .  	L NEAR	004A	_TEXT
-ABS_THAT . . . . . . . . . . . .  	L NEAR	003A	_TEXT
+ABS_ELSE . . . . . . . . . . . .  	L NEAR	0049	_TEXT
+ABS_THAT . . . . . . . . . . . .  	L NEAR	003B	_TEXT
 
 B  . . . . . . . . . . . . . . .  	L WORD	0004	_DATA
 
-F12_ELSE . . . . . . . . . . . .  	L NEAR	0024	_TEXT
+F12_ELSE . . . . . . . . . . . .  	L NEAR	0025	_TEXT
 F12_THAT . . . . . . . . . . . .  	L NEAR	000E	_TEXT
-FINAL  . . . . . . . . . . . . .  	L NEAR	003A	_TEXT
+FINAL  . . . . . . . . . . . . .  	L NEAR	003B	_TEXT
 
 I  . . . . . . . . . . . . . . .  	L WORD	0000	_DATA
 
 K  . . . . . . . . . . . . . . .  	L WORD	0006	_DATA
 
-MIN  . . . . . . . . . . . . . .  	L NEAR	0051	_TEXT
+MIN  . . . . . . . . . . . . . .  	L NEAR	0050	_TEXT
 
 RES  . . . . . . . . . . . . . .  	L WORD	0008	_DATA
-RESULTS  . . . . . . . . . . . .  	L NEAR	0053	_TEXT
+RESULTS  . . . . . . . . . . . .  	L NEAR	0052	_TEXT
 
 @CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
 @CODESIZE  . . . . . . . . . . .  	TEXT  0		
@@ -108,8 +108,8 @@ RESULTS  . . . . . . . . . . . .  	L NEAR	0053	_TEXT
 @VERSION . . . . . . . . . . . .  	TEXT  510		
 
 
-     57 Source  Lines
-     57 Total   Lines
+     56 Source  Lines
+     56 Total   Lines
      29 Symbols
 
   48004 + 459256 Bytes symbol space free
