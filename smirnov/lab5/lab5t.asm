@@ -37,7 +37,7 @@ CODE SEGMENT
 		je low_
         cmp al, 27
 		je exit
-
+        jmp loop_
     high_:
         cmp bx, 10000
         jge loop_
