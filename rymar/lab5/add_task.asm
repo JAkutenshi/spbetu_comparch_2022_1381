@@ -95,7 +95,7 @@ read_symb:
     mov dx, ip_prev
     mov ax, seg_prev
     mov ds, ax
-    mov ax, 251ch
+    mov ax, 2560h
     int 21h
     pop ds
     STI
