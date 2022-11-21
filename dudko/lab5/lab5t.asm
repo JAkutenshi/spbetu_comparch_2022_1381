@@ -3,7 +3,7 @@ data segment
     delay    db 5  ;how many seconds to wait.
     
     keep_cs dw 0 ; store seg
-    keep_ip dw 0 ; offset
+    keep_ip dw 0 ; �ffset
 data ends
 
 astack segment stack
@@ -49,7 +49,7 @@ beepend endp
 my_delay proc near
 push	ax
 push 	dx
-delaying:   
+delaying:
 ;get system time.
   mov  ah, 2ch
   int  21h ;return seconds in dh.
@@ -73,18 +73,50 @@ r proc near ; interupt
 	push bx
 	push cx
 
-	mov bx, 20000		; rate
+	mov bx, 10000		; rate
 	call beepstart
 
 	mov delay, ah; time
-	call my_delay
-	call beepend
+	;call my_delay
+	call loop_
 
 	pop cx
 	pop bx
 
 	iret;
 r endp
+
+loop_:
+        mov ax, bx
+        out 42h, al
+        mov al, ah
+        out 42h, al
+
+       mov ah, 0h
+	int 16h
+	cmp al, 'e'
+	je high_
+	cmp al, 'w'
+	je low_
+        cmp al, 'q'
+	je exit   
+        jmp loop_
+
+
+high_:
+        cmp bx, 10000
+        jge loop_
+        add bx, 1000
+        jmp loop_
+low_:
+        cmp bx, 1000
+	jle loop_
+	sub bx, 1000
+	jmp loop_
+
+exit:
+        call beepend
+
 
 set_int proc near
   mov al,60h;
@@ -98,6 +130,7 @@ set_int proc near
   pop ds
   ret
 set_int endp
+
 
 main proc far
   mov  ax, ds
@@ -129,7 +162,7 @@ main proc far
   pop  ds
   sti  
 
-  mov ax, 4c00h	; DOS
+  mov ax, 4c00h	; ����� � dos
   int 21h
 
 main endp;
