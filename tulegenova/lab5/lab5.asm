@@ -37,6 +37,17 @@ getTime endp
 
 
 Subr_int proc far
+    jmp start
+	keep_sp DW 0000h
+	keep_ss DW 0000h
+    int_stack db 50 dup(0)
+
+    start:
+    mov keep_sp, sp
+	mov keep_ss, ss
+    mov sp, seg int_stack
+	mov ss, sp
+	mov sp, offset start
 	push ax   
 	push cx
 	push dx
@@ -52,6 +63,8 @@ Subr_int proc far
 	pop  dx
 	pop  cx
 	pop  ax 
+    mov ss, keep_ss
+	mov sp, keep_sp
 	mov  al, 20h
 	
 	out 20h, al
