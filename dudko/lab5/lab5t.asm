@@ -157,7 +157,7 @@ main proc far
   mov  ax, keep_cs
   mov  ds, ax
   mov  ah, 25h
-  mov  al, 1ch
+  mov  al, 60h
   int  21h          
   pop  ds
   sti  
