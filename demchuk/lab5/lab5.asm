@@ -12,8 +12,7 @@ DATA	ENDS
 CODE	SEGMENT
 .186
 SUBR_INT  PROC  FAR
-	  
-        start: 
+	   
         push ax
           
         ;обработка прерывания
