@@ -1,4 +1,4 @@
-ASSUME CS:CODE, DS:DATA SS:AStack
+ASSUME CS:CODE, DS:DATA, SS:AStack
 
 AStack	SEGMENT  STACK
 	DW 512 DUP(?)
@@ -22,7 +22,7 @@ SUBR_INT  PROC  FAR
         mov save_sp, sp
         mov save_ax, ax
         mov sp, offset start
-        mov ax, seg STACK
+        mov ax, seg AStack
         mov ss, ax
         mov ax, save_ax
           
@@ -33,30 +33,22 @@ SUBR_INT  PROC  FAR
         mov ax, save_ax
           
         ;обработка прерывания
-        mov ah, 29h
+        mov ah, 29h	;функция печати символа
         mov al, 0Bh
-        out 70h, al
-        in al, 71h
-        and al, 11111011b
+        out 70h, al	;выбор адреса CMOS
+        in al, 71h	;ввод байта из CMOS в регистр
+        and al, 11111011b	;обнуление бита 
         out 71h, al
-        mov al, 4
+        mov al, 4	;текущий час
         call PRINT
-        mov al, 'h'
+        mov al, ':'
         int 29h
-        mov al, ' '
-        int 29h
-        mov al, 2
+        mov al, 2	;текущая минута
         call PRINT
-        mov al, 'm'
+        mov al, ':'
         int 29h
-        mov al, ' '
-        int 29h
-        mov al, 0
+        mov al, 0	;текущая секунда
         call PRINT
-        mov al, 's'
-        int 29h
-        mov al, ' '
-        int 29h
           
         ;восстановление регистров
         pop ds
@@ -76,11 +68,11 @@ PRINT  PROC  NEAR
 	out 70h, al
 	in al, 71h
 	push ax
-	shr al, 4
+	shr al, 4	;старшие 4 бита
 	add al, '0'
 	int 29h
 	pop ax
-	and al, 0Fh
+	and al, 0Fh	;младшие 4 бита
 	add al, 30h
 	int 29h
 	ret
@@ -97,7 +89,7 @@ Main	PROC  FAR
 	mov ds, ax
 	
 	;текущий вектор прерывания
-	mov ah, 35h
+	mov ah, 35h	;функция получения вектора
 	mov al, 08h
 	int 21h
 	mov keep_ip, bx
@@ -108,7 +100,7 @@ Main	PROC  FAR
 	mov dx, offset SUBR_INT
 	mov ax, seg SUBR_INT
 	mov ds, ax
-	mov ah, 25h
+	mov ah, 25h	;функция установки вектора
 	mov al, 08h
 	int 21h
 	pop ds
@@ -116,7 +108,7 @@ Main	PROC  FAR
 	int 08h
 	
 	;восстановление изначального вектора прерывания
-	cli	;if=0
+	cli	;if=0 флаг разрешения прерываний
 	push ds
 	mov dx, keep_ip
 	mov ax, keep_cs
