@@ -4,6 +4,8 @@
 
 char input_str[81];
 char output_str[81];
+short int count;
+
 int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
@@ -48,9 +50,25 @@ int main() {
         stosb
             jmp check
             finish :
+
+        mov esi, offset output_str
+        mov ebx, offset count
+        mov ax, 0
+        fstart:
+        lodsb
+        cmp al, '\0'
+        je fend
+        cmp al, 48
+        jl fstart
+        cmp al, 57
+        jg fstart
+        sub al, 48
+        add [ebx], al
+        jmp fstart
+        fend:
     };
     std::cout << "*Итог: ";
-    std::cout << output_str;
+    std::cout << output_str << '\n' << count;
     file << output_str;
     file.close();
     return 0;
