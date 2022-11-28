@@ -7,30 +7,14 @@ AStack	ENDS
 DATA	SEGMENT
 	keep_cs dw 0
 	keep_ip dw 0
-	save_ss dw 0
-	save_sp dw 0
-	save_ax dw 0
 DATA	ENDS
 
 CODE	SEGMENT
 .186
 SUBR_INT  PROC  FAR
 	  
-        start:
-        ;сохранение регистров
-        mov save_ss, ss
-        mov save_sp, sp
-        mov save_ax, ax
-        mov sp, offset start
-        mov ax, seg AStack
-        mov ss, ax
-        mov ax, save_ax
-          
+        start: 
         push ax
-        push ds
-        mov ax, seg SUBR_INT
-        mov ds, ax
-        mov ax, save_ax
           
         ;обработка прерывания
         mov ah, 29h	;функция печати символа
@@ -50,13 +34,7 @@ SUBR_INT  PROC  FAR
         mov al, 0	;текущая секунда
         call PRINT
           
-        ;восстановление регистров
-        pop ds
         pop ax
-        mov sp, save_sp
-        mov ax, save_ss
-        mov ss, ax
-        mov ax, save_ax
         mov al, 20h
         out 20h, al
         iret
