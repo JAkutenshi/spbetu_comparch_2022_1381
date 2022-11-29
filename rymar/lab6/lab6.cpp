@@ -102,6 +102,11 @@ void get_arr(int& QuantNumber, int*& ArrNumber, int& Xmin, int& Xmax, int& Quant
 			}
 		} while (true);
 	}
+	cout << "\nМассив сгенерированных чисел: ";
+	for (int i = 0; i < QuantNumber; i++) {
+		cout << ArrNumber[i] << " ";
+	}
+	cout << '\n';
 }
 
 void generation(int*& ArrNumber, int len, int min, int max)
