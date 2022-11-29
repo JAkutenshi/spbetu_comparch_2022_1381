@@ -12,7 +12,7 @@ DATA	ENDS
 CODE	SEGMENT
 .186
 SUBR_INT  PROC  FAR
-	   
+	  
         push ax
           
         ;обработка прерывания
@@ -82,7 +82,11 @@ Main	PROC  FAR
 	int 21h
 	pop ds
 	
-	int 08h
+	cycle:
+	mov ah, 01h
+	int 21h
+	cmp al, 27
+	jne cycle
 	
 	;восстановление изначального вектора прерывания
 	cli	;if=0 флаг разрешения прерываний
