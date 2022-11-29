@@ -91,7 +91,7 @@ void get_arr(int& QuantNumber, int*& ArrNumber, int& Xmin, int& Xmax, int& Quant
 		do {
 			cout << "Граница " << i + 1 << ": ";
 			cin >> tmp;
-			if (tmp <= ArrLeftBorder[i - 1] || tmp >= Xmax)
+			if (tmp <= ArrLeftBorder[i - 1] ) // || tmp >= Xmax
 			{
 				cout << "\n\nВыход за пределы диапазона!\n\n";
 			}
