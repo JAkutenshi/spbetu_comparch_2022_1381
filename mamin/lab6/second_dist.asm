@@ -1,8 +1,9 @@
+.586
 .MODEL FLAT, C
 .CODE
 
 PUBLIC C second_dist
-second_dist PROC C result1: dword, intervals: dword, n_int:dword, result2: dword, x_min: dword
+second_dist PROC C result1:dword, intervals: dword, result2: dword, x_max: dword, x_min: dword, n_int: dword
 
 push esi
 push edi
@@ -11,62 +12,63 @@ mov esi, intervals
 mov edi, result2
 mov ecx, n_int
 
-; lgi pgi < x_min => 0
-; lgi <= x_min  pgi = x_min => x_min
-; lgi >= x_min x_min <= pgi < x_max
-;
-;
-
 lp:
-	mov eax, [esi]
-	mov ebx, [esi+4]
+    mov eax, [esi] ; левая граница интервала
+    mov ebx, [esi + 4] ; правая граница
 
-	cmp eax, x_min
-	jge m2
-	mov eax, 0
-	sub ebx, x_min
-	cmp ebx, 0
-	jle m1	
-	jmp m6
-	m2:
-		sub ebx, eax
-		cmp ebx, 0
-		je m1
-		sub eax, x_min
-		
-		m6:
-		push esi
-		push ecx
+    cmp eax, x_min ; если eax >= x_min
+    jge l2
+    mov eax, 0 ; иначе, eax = 0, начало массива result1
 
-		mov esi, result1
-		mov ecx, ebx
-		mov ebx, 0
-		lp2:
-			add ebx, [esi+4*eax]
-			inc eax
-			loop lp2
+    sub ebx, x_min ; если длина интервала = 0
+    jle l4
+    jmp l5
 
-		pop ecx
-		cmp ecx, 1
-		jne m4
-		add ebx, [esi+4*eax]
-		m4:
-			mov [edi], ebx
-			pop esi
-			jmp m3
+    l2:
+        sub ebx, eax ; количество элементов в интервале
+        cmp ebx, 0 ; если длина интервала = 0
+        je l4
+        sub eax, x_min ; индекс первого элемента из текущего интервала в массиве result1
 
-	m1:
-		mov ebx, 0
-		mov [edi], ebx 
-	
-	m3:
-		add edi, 4
-		add esi, 4
-	loop lp
+    l5:
+        push esi 
+        push ecx
+
+        mov ecx, ebx ; количество элементов из result1 по которым нужно пройти
+        mov esi, result1 ; массив
+        mov ebx, 0 ; считает сумму подходящих элементов
+
+    lp2: ; цикл, считает сумму элементов, входящих в интервал
+       add ebx, [esi + 4*eax]
+       inc eax
+       loop lp2
+
+    pop ecx
+
+
+    cmp ecx, 1 ; если обрабатывали не последний элемент, то записываем сумму в массив результат
+    jne l3
+    add ebx, [esi + 4*eax] ; иначе, скобка последнего интервала вадратная, поэтому добавляем еще элемент
+
+    l3:
+
+        mov [edi], ebx ; записываем результат
+        pop esi
+        jmp l1
+
+    l4:
+        mov [edi], ebx ; записываем 0, если интервал пустой
+
+    l1:
+        add edi, 4 ; двигаемся к след. элементам массивов
+        add esi, 4
+    
+    loop lp
+   
 
 pop edi
 pop esi
 
 ret
-second_dist endp
-end
+second_dist ENDP
+END
