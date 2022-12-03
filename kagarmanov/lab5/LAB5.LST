@@ -1,0 +1,263 @@
+Microsoft (R) Macro Assembler Version 5.10                  12/4/22 02:05:14
+                                                             Page     1-1
+
+
+ 0000				AStack SEGMENT STACK
+ 0000  0400[			    DW 1024 DUP(?)
+	   ????			
+			 ]	
+				
+ 0800				Astack ENDS
+				
+ 0000				DATA SEGMENT
+ 0000  0000			    KEEP_CS DW 0
+ 0002  0000			    KEEP_IP DW 0
+ 0004				DATA ENDS
+				
+				
+ 0000				CODE SEGMENT
+				    ASSUME CS:CODE,DS:DATA, SS:AStack
+				
+				
+ 0000				Module PROC FAR ;результат делен�
+				�я-в AX,постоянный остаток -
+				 в BX, делитель - в DI
+ 0000  03 D3			    add DX,BX
+ 0002  3B D7			    cmp DX,DI
+ 0004  72 03			    jb finish
+ 0006  2B D7			    sub DX,DI
+ 0008  40			    inc AX
+ 0009				finish:
+ 0009  CB			    ret
+ 000A				Module ENDP
+				
+				
+ 000A				User_interruption PROC FAR
+ 000A  E9 041D R		    jmp start
+ 000D  0012			    HIGHT DW 0012h
+ 000F  34DC			    LOW  DW  034DCh
+LAB5.ASM(29): warning A4016: Reserved word used as symbol: LOW
+				
+ 0011  1B58			    DIVIDER DW 7000
+				
+ 0013  0000			    REMAINDER_HIGHT DW 0
+ 0015  0000			    REMAINDER_LOW DW 0
+ 0017  0000			    TEMP_LOW DW 0  
+				     
+ 0019  0000			    SS_INT dw 0
+ 001B  0000			    SP_INT dw 0
+ 001D  0200[			    INT_STACK DW 512 DUP('0')
+	   0030			
+			 ]	
+				
+				
+ 041D				start:
+ 041D  2E: 8C 16 0019 R		    mov SS_INT ,SS
+ 0422  2E: 89 26 001B R		    mov SP_INT,SP
+				    
+ 0427  BC ---- R		    mov SP,SEG INT_STACK
+ 042A  8E D4			    mov SS,SP
+Microsoft (R) Macro Assembler Version 5.10                  12/4/22 02:05:14
+                                                             Page     1-2
+
+
+ 042C  BC 041D R		    mov SP,offset start
+				    
+ 042F  50			    push AX
+ 0430  53			    push BX
+ 0431  51			    push CX
+ 0432  52			    push DX
+ 0433  57			    push DI
+				
+ 0434  BA 0000			    mov DX,0
+ 0437  2E: C7 06 000D R 0012	    mov HIGHT,0012h
+ 043E  2E: C7 06 000F R 34DC	    mov LOW, 034DCh
+				
+ 0445  2E: 8B 3E 0011 R		    mov DI,DIVIDER
+ 044A  2E: A1 000D R		    mov AX,HIGHT
+ 044E  F7 F7			    DIV DI
+ 0450  2E: 89 16 0013 R		    mov REMAINDER_HIGHT, DX
+ 0455  2E: A3 000D R		    mov HIGHT,AX   
+				  
+ 0459  B8 FFFF			    mov AX,0FFFFh
+ 045C  BA 0000			    mov DX,0
+ 045F  F7 F7			    DIV DI
+ 0461  8B DA			    mov BX,DX
+ 0463  2E: 8B 0E 0013 R		    mov CX,REMAINDER_HIGHT
+ 0468  F7 E1			    mul CX 
+ 046A  BA 0000			    mov DX,0
+ 046D				test:
+LAB5.ASM(72): warning A4016: Reserved word used as symbol: TEST
+ 046D  9A 0000 ---- R		    call Module
+ 0472  E2 F9			    loop test
+				    
+ 0474  2E: 8B 1E 0013 R		    mov BX,REMAINDER_HIGHT
+ 0479  9A 0000 ---- R		    call Module
+ 047E  2E: 89 16 0015 R		    mov REMAINDER_LOW,DX
+ 0483  2E: A3 0017 R		    mov TEMP_LOW,AX
+				
+ 0487  2E: A1 000F R		    mov AX,LOW
+ 048B  BA 0000			    mov DX,0
+ 048E  F7 F7			    DIV DI
+ 0490  2E: 8B 1E 0015 R		    mov BX,REMAINDER_LOW
+ 0495  9A 0000 ---- R		    call Module
+ 049A  2E: 03 06 0017 R		    add AX,TEMP_LOW
+ 049F  2E: 83 16 000D R 00	    adc HIGHT,0000
+ 04A5  2E: A3 000F R		    mov LOW,AX
+ 04A9  2E: 89 16 0015 R		    mov REMAINDER_LOW,DX
+				
+				
+				
+				
+ 04AE  B0 B6			    mov AL,10110110b
+ 04B0  E6 43			    out 43h,AL
+ 04B2  2E: A1 000F R		    mov ax,LOW
+ 04B6  E6 42			    out 42h, al
+ 04B8  8A C4			    mov al, ah
+ 04BA  E6 42			    out 42h, al
+				
+Microsoft (R) Macro Assembler Version 5.10                  12/4/22 02:05:14
+                                                             Page     1-3
+
+
+ 04BC  E4 61			    in AL,61h
+ 04BE  0C 03			    or AL,00000011b
+ 04C0  E6 61			    out 61h,AL
+ 04C2  B9 0007			    mov CX,0007h
+ 04C5  BA A120			    mov DX,0A120h
+ 04C8  B4 86			    mov AH,86h
+ 04CA  CD 15			    int 15h
+				   
+ 04CC  E4 61			    in AL,61h
+ 04CE  24 FC			    and AL,11111100b
+ 04D0  E6 61			    out 61h,AL
+				   
+ 04D2  5F			    pop DI
+ 04D3  5A			    pop DX
+ 04D4  59			    pop CX
+ 04D5  5B			    pop BX
+ 04D6  58			    pop AX
+ 04D7  2E: 8E 16 0019 R		    mov SS,SS_INT
+ 04DC  2E: 8B 26 001B R		    mov SP,SP_INT
+				
+ 04E1  CF			IRET
+ 04E2				User_interruption ENDP
+				
+				
+ 04E2				Main PROC FAR
+ 04E2  1E			    push DS
+ 04E3  2B C0			    sub AX,AX
+ 04E5  50			    push AX
+ 04E6  B8 ---- R		    mov  AX,DATA
+ 04E9  8E D8			    mov DS,AX
+				
+ 04EB  B4 35			    mov AH,35h
+ 04ED  B0 23			    mov AL,23h
+ 04EF  CD 21			    int 21h
+ 04F1  89 1E 0002 R		    mov KEEP_IP,BX
+ 04F5  8C 06 0000 R		    mov KEEP_CS,ES
+				    
+ 04F9  1E			    push DS
+ 04FA  B8 ---- R		    mov AX,SEG User_interruption
+ 04FD  8E D8			    mov DS,AX
+ 04FF  BA 000A R		    mov DX,OFFSET User_interruption
+ 0502  B4 25			    mov AH,25h
+ 0504  B0 23			    mov AL,23h
+ 0506  CD 21			    int 21h
+ 0508  1F			    pop DS
+ 0509				begin:
+				
+ 0509  B4 00			    mov ah, 0
+ 050B  CD 16			    int 16h
+ 050D  3C 03			    cmp al, 3
+ 050F  75 04			    jnz quit
+ 0511  CD 23			    int 23h
+ 0513  EB F4			    jmp begin
+				
+Microsoft (R) Macro Assembler Version 5.10                  12/4/22 02:05:14
+                                                             Page     1-4
+
+
+ 0515				quit:
+				        
+ 0515  FA			    CLI
+ 0516  1E			    push DS
+ 0517  A1 0000 R		    mov AX,KEEP_CS
+ 051A  8E D8			    mov DS,AX
+ 051C  8B 16 0002 R		    mov DX,KEEP_IP
+ 0520  B4 25			    mov AH,25h
+ 0522  B0 23			    mov AL,23h
+ 0524  CD 21			    int 21h
+ 0526  1F			    pop DS
+ 0527  FB			    STI 
+				
+ 0528  CB			ret
+ 0529				Main ENDP
+				
+ 0529				CODE ENDS
+				    END Main
+Microsoft (R) Macro Assembler Version 5.10                  12/4/22 02:05:14
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+ASTACK . . . . . . . . . . . . .  	0800	PARA	STACK	
+CODE . . . . . . . . . . . . . .  	0529	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0004	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+BEGIN  . . . . . . . . . . . . .  	L NEAR	0509	CODE
+
+DIVIDER  . . . . . . . . . . . .  	L WORD	0011	CODE
+
+FINISH . . . . . . . . . . . . .  	L NEAR	0009	CODE
+
+HIGHT  . . . . . . . . . . . . .  	L WORD	000D	CODE
+
+INT_STACK  . . . . . . . . . . .  	L WORD	001D	CODE	Length = 0200
+
+KEEP_CS  . . . . . . . . . . . .  	L WORD	0000	DATA
+KEEP_IP  . . . . . . . . . . . .  	L WORD	0002	DATA
+
+LOW  . . . . . . . . . . . . . .  	L WORD	000F	CODE
+
+MAIN . . . . . . . . . . . . . .  	F PROC	04E2	CODE	Length = 0047
+MODULE . . . . . . . . . . . . .  	F PROC	0000	CODE	Length = 000A
+
+QUIT . . . . . . . . . . . . . .  	L NEAR	0515	CODE
+
+REMAINDER_HIGHT  . . . . . . . .  	L WORD	0013	CODE
+REMAINDER_LOW  . . . . . . . . .  	L WORD	0015	CODE
+
+SP_INT . . . . . . . . . . . . .  	L WORD	001B	CODE
+SS_INT . . . . . . . . . . . . .  	L WORD	0019	CODE
+START  . . . . . . . . . . . . .  	L NEAR	041D	CODE
+
+TEMP_LOW . . . . . . . . . . . .  	L WORD	0017	CODE
+TEST . . . . . . . . . . . . . .  	L NEAR	046D	CODE
+
+USER_INTERRUPTION  . . . . . . .  	F PROC	000A	CODE	Length = 04D8
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  LAB5		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+Microsoft (R) Macro Assembler Version 5.10                  12/4/22 02:05:14
+                                                             Symbols-2
+
+
+
+    172 Source  Lines
+    172 Total   Lines
+     27 Symbols
+
+  48016 + 457194 Bytes symbol space free
+
+      2 Warning Errors
+      0 Severe  Errors
