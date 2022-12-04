@@ -10,10 +10,10 @@ xor edx, edx
 xor edi, edi
 
 cycle:
-	mov edi, [eax + 4 * edx] ;значение
+	mov edi, [eax + 4 * edx] ;Р·РЅР°С‡РµРЅРёРµ
 	sub edi, Xmin
-	inc dword ptr [ebx + 4 * edi] ;увеличение счетчика числа
-	inc edx ;следующее значение
+	inc dword ptr [ebx + 4 * edi] ;СѓРІРµР»РёС‡РµРЅРёРµ СЃС‡РµС‚С‡РёРєР° С‡РёСЃР»Р°
+	inc edx ;СЃР»РµРґСѓСЋС‰РµРµ Р·РЅР°С‡РµРЅРёРµ
 	loop CYCLE
 finish:
 	ret
