@@ -62,7 +62,10 @@ SUBR_INT PROC FAR
     mov al, 20h
     out 20h, al
     dec WORD PTR [check]
-    mov al, TONE            ;Высота звука (частота)
+    ;mov al, TONE            ;Высота звука (частота)
+    mov si, 0
+    lea si,[TONE]
+    lodsb
     out 42h, al             ;Включить таймер, который будет выдавать импульсы на динамик с заданной частотой
     in al, 61h              ;Получить состояние динамика
     or al, 00000011b        ;Установить два младших бита
