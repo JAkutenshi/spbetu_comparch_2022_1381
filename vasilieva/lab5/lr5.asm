@@ -17,7 +17,7 @@ SUBR_INT PROC FAR
 	push dx ;
 	push cx ;
 	
-	mov di, 6000 ;частота звука
+	;mov di, 6000 ;частота звука
 	mov bx, 10 ;длительность (время)
 	
 	start:    ;включение динамика
