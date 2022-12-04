@@ -1,6 +1,7 @@
 DATA SEGMENT
         KEEP_CS DW 0 ;буфер для хранения сегмента
         KEEP_IP DW 0 ;смещение вектора прерывания
+        message DB 'ESC = exit, + = increase by 100, - = reduce by 100', 0dh, 0ah, '$'
 DATA ENDS
 
 STACK    SEGMENT  STACK
@@ -60,6 +61,7 @@ Main PROC FAR
 	push ax
 	mov ax, DATA
 	mov ds, ax
+	mov di, 5000 ;частота звука
     
 ;Запоминание текущего вектора прерывания
 	mov ah, 35h ;функция получения вектора
@@ -77,9 +79,45 @@ Main PROC FAR
 	mov al, 08h ;номер вектора
 	int 21h ;меняем прерывание
 	pop ds
-	int 08h ;вызов прерывания
+	;int 08h ;вызов прерывания
+
+	jmp read
+
+text:
+mov dx, offset message
+mov ah, 09h
+int 21h
+jmp read
+
+;Считывание символа
+read:
+push ax
+mov ah, 1h ;Определение, есть ли символ в буфере клавиатуры
+int 21H
+
+cmp al, '-'
+je minus
+
+cmp al, '+'
+je plus
+
+cmp al, 1bh ;проверка на ESC
+pop ax
+jnz text ;пока не равно нулю
+jmp final_esc
+
+minus:
+sub di, 100
+pop ax
+jmp read
+
+plus:
+add di, 100
+pop ax
+jmp read
 
 ;Восстановление изначального вектора прерывания
+final_esc:
 	CLI
 	push ds
 	mov dx, KEEP_IP ;смещение для процедуры в DX
