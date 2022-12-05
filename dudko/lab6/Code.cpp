@@ -1,45 +1,17 @@
 #include <iostream>
 #include <random>
-#include <stdlib.h>
 #include <fstream>
 #include <algorithm>
 
-extern "C" {void border_function(int* Array, int len, int* LGrInt, int NInt, int* answer); }
+extern "C" {void mod_function(int* Array, int len, int* LGrInt, int NInt, int* answer); }
 
-namespace {
-    auto randomizer = std::mt19937(std::random_device{}());
 
-    int rand_int(int from, int to) {
-        return std::uniform_int_distribution<int>(from, to)(randomizer);
-    }
-
-    void qsortRecursive(int* mas, int size) {
-        int i = 0;
-        int j = size - 1;
-        int mid = mas[size / 2];
-        do {
-            while (mas[i] < mid) {
-                i++;
-            }
-            while (mas[j] > mid) {
-                j--;
-            }
-            if (i <= j) {
-                int tmp = mas[i];
-                mas[i] = mas[j];
-                mas[j] = tmp;
-
-                i++;
-                j--;
-            }
-        } while (i <= j);
-
-        if (j > 0) {
-            qsortRecursive(mas, j + 1);
-        }
-        if (i < size) {
-            qsortRecursive(&mas[i], size - i);
-        }
+void generate_array(int*& array, int length, int min, int max) {
+    std::random_device seed;
+    std::mt19937 gen(seed());
+    std::uniform_int_distribution<int> dist{ min, max };
+    for (int i = 0; i < length; i++) {
+        array[i] = dist(gen);
     }
 
 }
@@ -48,78 +20,74 @@ namespace {
 int main()
 {
     int NumRamDat;
-    int Xmin;
-    int Xmax;
+    int min;
+    int max;
     int NInt;
+
     int* Array;
     int* LGrInt;
 
-    std::cout << "Vvedite kolichestvo elementov massiva randomnih chisel: ";
+    std::cout << "Enter array size.\n";
     std::cin >> NumRamDat;
+
     Array = new int[NumRamDat];
 
-    std::cout << "Vvedite promejutok randoma\nOt: ";
-    std::cin >> Xmin;
-    std::cout << "Do: ";
-    std::cin >> Xmax;
+    std::cout << "Enter a range number:\nFrom:";
+    std::cin >> min;
+    std::cout << "To:";
+    std::cin >> max;
 
-    if (Xmin >= Xmax) {
-        std::cout << "Nepravilnoe max ;(";
-        return 0;
+    while (min >= max) {
+        std::cout << "Incorrect Xmax, input again:";
+        std::cin >> max;
     }
+    generate_array(Array, NumRamDat, min, max);
 
-    for (int i = 0; i < NumRamDat; i++) Array[i] = rand_int(Xmin, Xmax);
-
-
-    std::cout << "Vvedite kolichestvo intervalov: ";
+    std::cout << "Enter the number of split intervals:";
     std::cin >> NInt;
-
-    if (NInt < 0 || NInt > 24) {
-        std::cout << "Nepravilnoe kolichestvo ;(";
-        return 0;
+    while (NInt < 0 || NInt > 24) {
+        std::cout << "Incorrect NInt, input again:";
+        std::cin >> NInt;
     }
 
     LGrInt = new int[NInt];
 
-    std::cout << "Vvedite intervali v luobom poryadke\n";
+    std::cout << "Enter intervals\n";
     for (int i = 0; i < NInt; i++)
     {
-        std::cout << "Interval" <<" #" << i + 1 << ": ";
+        std::cout << "Interval_Border" << i + 1 << ": ";
         std::cin >> LGrInt[i];
-        if (LGrInt[i] > Xmax || LGrInt[i] < Xmin) {
-            std::cout << "Nepravilnoe interval";
-            return 0;
+        while (LGrInt[i] > max || LGrInt[i] < min) {
+            std::cout << "Incorrect border, input again:";
+            std::cin >> LGrInt[i];
         }
     }
-
-    qsortRecursive(LGrInt, NInt);
+    std::sort(LGrInt, LGrInt + NInt);
 
     int* answer = new int[NInt] {0};
 
-    border_function(Array, NumRamDat, LGrInt, NInt, answer);
-
-    std::cout << "\n";
-    std::cout << "Massiv:\n";
-
-    qsortRecursive(Array, NumRamDat);
-
-    int j = 0;
-    int split = answer[j];
-    if(NInt != 0) std::cout <<"| ";
-    for (int i = 0; i < NumRamDat; i++) {
-        if (i+1 < split || NInt ==0) std::cout << Array[i] << " "; 
-        else { 
-            j++;
-            split += answer[j];
-            std::cout << Array[i] << " | "; 
-        }
-    }
-
+    mod_function(Array, NumRamDat, LGrInt, NInt, answer);
 
     std::cout << "\n\n";
-    std::cout << "Indeks " << "Interval " << "Kolichestvo"<< std::endl;
+    std::cout << "Array_Random:\n";
+    for (int i = 0; i < NumRamDat; i++)
+    {
+        std::cout << Array[i] << " ";
+    }
 
-    for (int i = 0; i < NInt; i++) std::cout << "  " << i + 1 << "\t  " << LGrInt[i] << "\t  " << answer[i] << '\n';
-
-
+    std::sort(Array, Array + NumRamDat);
+    std::cout << "\n\n";
+    std::cout << "Array_Sorted:\n";
+    for (int i = 0; i < NumRamDat; i++)
+    {
+        std::cout << Array[i] << " ";
+    }
+    std::cout << "\n\n";
+    std::cout << "Index\t" << "Interval_Border\t" << "Count\n";
+    for (int i = 0; i < NInt; i++) {
+        std::cout << "  " << i + 1 << "\t  " << LGrInt[i] << "\t  " << answer[i] << '\n';
+    }
+    delete[] Array;
+    delete[] LGrInt;
+    delete[] answer;
 }
