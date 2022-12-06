@@ -37,7 +37,7 @@ int main () {
     int* arr = calloc(NumRanDat, sizeof(int));
     printf("Массив псевдослучайных чисел:\n");
     for (int i = 0; i < NumRanDat; i++){
-        arr[i] = rand() % (Xmax - Xmin) + Xmin;
+        arr[i] = rand() % (Xmax - Xmin + 1) + Xmin;
         printf("%d ", arr[i]);
     }
     printf("\n");
