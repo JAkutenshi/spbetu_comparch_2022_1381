@@ -99,8 +99,7 @@ LSKIP:
     INC ECX
     CMP ECX, QuantBorder
     JNE CYCLE_AVG
- 
-END_FUNC:
+
 RET
 func2 ENDP
 END
