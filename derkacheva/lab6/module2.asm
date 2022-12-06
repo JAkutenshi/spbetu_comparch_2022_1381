@@ -2,7 +2,7 @@
 .MODEL FLAT, C
 .CODE
 PUBLIC C module2
-module2 PROC C distr: dword, interv: dword, min: dword, max: dword, res: dword
+module2 PROC C distr: dword, interv: dword, min: dword, max: dword, res: dword, med: dword
 
 push esi
 push edi
@@ -18,29 +18,48 @@ mov ecx, 0
 
 
 Start:
-cmp eax, [edi+4*ebx]
-jl Act 
-add ebx, 1
+cmp eax, [edi+4*ebx] ;сравниваем мин с границой интервала
+jl Act				 ;мин меньше границы переходим к акт
+add ebx, 1			 ; ищем следующий 
 jmp Start
 
 Act:
-	push edi
 	push eax
+	push edi
+
 	mov edi, distr
-	sub ebx, 1; ")"
-	mov eax, [esi+4*ebx] 
-	mov edx, [edi+4*ecx] 
+	sub ebx, 1
+	mov eax, [esi+4*ebx] ;новый массив(текущ)
+	mov edx, [edi+4*ecx] ;единичный массив(следующий)
 	add eax, edx 
-	mov [esi+4*ebx], eax
-	pop eax
+	mov [esi+4*ebx], eax ;в новый положили сумму текущего и предыдущего числа
 	pop edi
+
+	push edi
+	push edx
+	mov edi, med
+
+	test eax, 1
+	jnz ad
+	jz cont
+ad:
+	add eax, 1
+cont:
+	mov [edi+4*ebx], eax
+	pop edx
+	pop edi
+
+	pop eax
+
+
 		push ecx
 		mov ecx, max
-		cmp eax, ecx 
+		cmp eax, ecx ; сравниваем мин и мах
 		pop ecx
 		je final
-	add ecx, 1 
-	add eax, 1
+
+	add ecx, 1 ; к следующему единич.
+	add eax, 1 ; минимум
 	jmp Start
 
 final:

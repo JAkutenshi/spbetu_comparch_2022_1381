@@ -4,7 +4,7 @@
 #include <string>
 
 extern "C" void module1(int* arr, int n, int* res1, int min);
-extern "C" void module2(int* distr, int* interv, int min, int max, int* res2);
+extern "C" void module2(int* distr, int* interv, int min, int max, int* res2, int* med);
 
 using namespace std;
 
@@ -36,7 +36,7 @@ int main() {
 	}
 	cout << "Введите число интервалов: ";
 	cin >> NInt;
-	if (NInt >= 24 || NInt < 1 || NInt < D + 1) {
+	if (NInt >= 24 || NInt < 1) {
 		cout << "Неверное число интервалов, попробуйте еще раз\n";
 		return 0;
 	}
@@ -47,19 +47,20 @@ int main() {
 	for (int i = 0; i < NInt; i++) {
 		cin >> interv[i];
 		result_modul2[i] = 0;
+		if (interv[i] < min || interv[i] > max) {
+			cout << "Левые границы не входят в диапозон значений, попробуйте еще раз\n";
+			return 0;
+		}
 	}
 	qsort(interv, NInt, sizeof(int*), comp);
 
-	if (interv[NInt] < min || interv[NInt] > max) {
-		cout << "Левые границы не входят в диапозон значений, попробуйте еще раз\n";
-		return 0;
-	}
+	
 
 	random_device rd;
 	mt19937 gen(rd());
-	float l = float(max + min) / 2;
-	float r = float(max - min) / 4;
-	normal_distribution<float> conc_gen(l, r);
+	int l = min;
+	int r = max;
+	uniform_int_distribution<int> conc_gen(l, r);
 
 	interv[NInt] = max + 1;
 	int* result_module1 = new int[abs(D) + 1];
@@ -90,20 +91,19 @@ int main() {
 		file << res1;
 		cout << res1;
 	}
-
-	module2(result_module1, interv, min, max, result_modul2);
+	int* med = new int[NInt] {0};
+	module2(result_module1, interv, min, max, result_modul2, med);
 
 	string final_res = "\nРезультат работы программы:\n";
-	string final_table = "N\t| L\t| Count";
+	string final_table = "N\t| L\t| Count\t med\n";
 
 	file << final_res << final_table << endl;
-	cout << "\n" << final_res << final_table << endl;
+	cout << "\n" << final_res << final_table;
 	cout << "-------------------------\n";
 	for (int i = 0; i < NInt; i++) {
-		string res2 = (to_string(i) + "\t|" + to_string(interv[i]) + "\t|" + to_string(result_modul2[i]) + "\n");
+		string res2 = (to_string(i) + "\t|" + to_string(interv[i]) + "\t|" + to_string(result_modul2[i]) + "\t|" + to_string(med[i]/2) + "\n");
 		file << res2;
 		cout << res2;
 	}
-
 	return 0;
 }
