@@ -67,7 +67,10 @@ int main()
     int* answer = new int[NInt] {0};
     int* maximums = new int[NInt] {min};
 
-    mod_function(Array, NumRamDat, LGrInt, NInt, maximums, answer);
+    for (int i = 0; i < NInt; i++)
+    {
+        maximums[i] = min;
+    }
 
     std::cout << "\n";
     std::cout << "Array_Random:\n";
@@ -83,6 +86,10 @@ int main()
     {
         std::cout << Array[i] << " ";
     }
+   
+
+    mod_function(Array, NumRamDat, LGrInt, NInt, maximums, answer);
+
     std::cout << "\n";
     std::cout << "Maxs_InOrder:\n";
     for (int i = 0; i < NInt; i++)
@@ -90,6 +97,7 @@ int main()
         std::cout << maximums[i] << " ";
     }
     std::cout << "\n";
+
     std::cout << "Index\t" << "Border\t" << "Count\n";
     for (int i = 0; i < NInt; i++) {
         std::cout << "  " << i + 1 << "\t  " << LGrInt[i] << "\t  " << answer[i] << '\n';

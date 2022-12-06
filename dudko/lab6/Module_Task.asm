@@ -6,6 +6,7 @@ mod_function PROC C USES EDI ESI, array:dword, len:dword, LGrInt:dword, NInt:dwo
 	push eax
 	push ebx
 	push ecx
+	push edx
 	push edi
 	push esi
 
@@ -44,10 +45,10 @@ loop_:
 			; task
 			push eax
 			mov edi, maximums
-			mov eax, [esi + 4 * eax]
-			cmp eax, [edi + 4 * ebx]
+			mov edx, [esi + 4 * eax]
+			cmp edx, [edi + 4 * ebx]
 			jl task_end
-			mov [edi + 4 * ebx], eax
+			mov [edi + 4 * ebx], edx
 		task_end:
 			pop eax
 			; task end
