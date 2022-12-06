@@ -11,25 +11,37 @@ CODE SEGMENT
     ASSUME CS:CODE, DS:DATA, SS:STACK
     SUBR_INT PROC FAR
         push ax
-        push cx
+        push dx
+        push bx
 
-        sub cx, cx
+        mov al, 10110110b
+        out 43h, al
+
+        mov ax, 4400
+        out 42h, al
+        mov al, ah
+        out 42h, al
 
         in al, 61h
-        mov ah, al
-        and al, 0FEh
-        sound:
-        or al, 2
+        or al, 00000011b
         out 61h, al
-        and al, 0FDh
-        out 61h, al
-        loop sound
-        mov al, ah
-        out 61h, al
-        
-        pop cx
-        pop ax
 
+        mov  ah, 0
+        int  1ah
+        mov  bx, dx
+        add  bx, 45
+        delay_loop:
+        int  1ah
+        cmp  dx, bx
+        jne  delay_loop
+ 
+        in al, 61h
+        and al, 11111100b
+        out 61h, al 
+
+        pop bx
+        pop dx
+        pop ax
         mov al, 20h
         out 20h, al
         iret
@@ -55,7 +67,10 @@ CODE SEGMENT
         int 21h
         pop ds
 
-        int 23h
+        mov ah, 01h
+        int 21h
+
+        ;int 23h
 
         CLI
         mov dx, KEEP_IP
