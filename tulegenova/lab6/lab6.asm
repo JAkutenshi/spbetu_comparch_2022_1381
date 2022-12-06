@@ -34,13 +34,11 @@ func PROC C arr:dword, lenght:dword, lgi:dword, count:dword, res:dword
 		jmp end_boarder
 
 	inc_cur:
-		pop eax
 		inc ecx
 		dec ebx
 		jmp next
 
 	end_boarder:
-		pop eax
 		dec ebx
 		mov edi, res
 		mov [edi + 4 * ebx], ecx
@@ -50,6 +48,7 @@ func PROC C arr:dword, lenght:dword, lgi:dword, count:dword, res:dword
 		jmp next
 
 	next:
+		pop eax
 		inc eax
 		jmp check_num
 
