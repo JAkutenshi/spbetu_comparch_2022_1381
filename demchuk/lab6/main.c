@@ -46,8 +46,15 @@ int main () {
     for (int i = 0; i < NInt; i++){
         res[i] = 0;
     }
+    
+    int* res2 = calloc(NInt, sizeof(int));
+    for (int i = 0; i < NInt; i++){
+        res2[i] = 0;
+    }
 
-    func(arr, LGrInt, NInt, NumRanDat, res);
+    func(arr, LGrInt, NInt, NumRanDat, res, res2); //работает некорректно
+
+    //func(arr, LGrInt, NInt, NumRanDat, res); работает правильно
 
     FILE* file = fopen("result.txt", "w");
     
