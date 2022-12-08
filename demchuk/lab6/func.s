@@ -5,6 +5,7 @@
 # rdx NInt
 # rcx NumRanDat
 # r8  res
+# r9  res2
 
 func:
 	sub edx, 2
