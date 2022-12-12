@@ -98,12 +98,19 @@ Main	PROC FAR
 	SUB AX, AX		
 	PUSH AX		
 	MOV AX, DATA		
-	MOV DS, AX
-
+	MOV DS, AX			
+;считывание символа с клавиатуры (в данном случае это q)
+	readkey:
+		MOV AH, 0		
+		INT INTERRUPTION		
+		CMP AH, 16		;код считывания символа q
+		JNE readkey
+		INT 09H
+		
 ;текущее состояние вектора
 
 	MOV AH, 35H 		
-	MOV AL, 60H		
+	MOV AL, INTERRUPTION		
 	INT 21H
 	MOV KEEP_IP, BX	
 	MOV KEEP_CS, ES 	
@@ -115,17 +122,10 @@ Main	PROC FAR
 	MOV AX, SEG SUBR_INT	
 	MOV DS, AX		
 	MOV AH, 25H					
-	MOV AL, 60H		
+	MOV AL, INTERRUPTION		
 	INT 21H		
 	POP DS
-	
-;считывание символа с клавиатуры (в данном случае это q)
-	readkey:
-		MOV AH, 0		
-		INT INTERRUPTION		
-		CMP AH, 16		;код считывания символа q
-		JNE readkey		
-		INT 60H		
+	INT INTERRUPTION
 
 ;восстановление исходного вектора прерывания
 	CLI				
@@ -134,7 +134,7 @@ Main	PROC FAR
 	MOV AX, KEEP_CS		
 	MOV DS, AX
 	MOV AH, 25H			
-	MOV AL, 60H			
+	MOV AL, INTERRUPTION			
 	INT 21H			
 	POP DS
 	STI				
