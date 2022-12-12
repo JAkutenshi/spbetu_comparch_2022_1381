@@ -10,18 +10,18 @@ extern "C" {void first(int* array, int lenArray, int Xmin, int* arrResalt);
 			void second(int* array, int Xmin, int Xmax, int* LGrInt, int* arr_out); }
 
 void print_first(int Xmin, int Xmax, int* arr) {
-	std::cout << endl << "Результат 1 модуля: " << std::endl;
-	std::cout <<"Интервал:\t" << "Значение:\t" << "Кол-во:" << std::endl;
+	std::cout << endl << "Р РµР·СѓР»СЊС‚Р°С‚ 1 РјРѕРґСѓР»СЏ: " << std::endl;
+	std::cout <<"РРЅС‚РµСЂРІР°Р»:\t" << "Р—РЅР°С‡РµРЅРёРµ:\t" << "РљРѕР»-РІРѕ:" << std::endl;
 	for (int i = Xmin, j = 0; i <= Xmax; i++, j++) {
 		std::cout << "   "<<j + 1<<"\t           " << i << "\t           " << arr[j] << std::endl;
 	}
 }
 
 void print_second(int NInt, int NumRanDat, int*& arr, int*& LGrInt, int*& answer) {
-	std::cout << "Результат 2 модуля:" << std::endl;
+	std::cout << "Р РµР·СѓР»СЊС‚Р°С‚ 2 РјРѕРґСѓР»СЏ:" << std::endl;
 	file << std::endl;
-	std::cout << "Номер\t" << "Левое значение\t" << "Кол-во" << std::endl;
-	file << "Номер\t" << "Левое значение\t" << "Кол-во" << std::endl;
+	std::cout << "РќРѕРјРµСЂ\t" << "Р›РµРІРѕРµ Р·РЅР°С‡РµРЅРёРµ\t" << "РљРѕР»-РІРѕ" << std::endl;
+	file << "РќРѕРјРµСЂ\t" << "Р›РµРІРѕРµ Р·РЅР°С‡РµРЅРёРµ\t" << "РљРѕР»-РІРѕ" << std::endl;
 	for (int i = 0; i < NInt; i++) {
 		std::cout << "  " << i + 1 << "\t      " << LGrInt[i] << "\t          " << answer[i] << std::endl;
 		file << "  " << i + 1 << "\t      " << LGrInt[i] << "\t          " << answer[i] << std::endl;
@@ -32,31 +32,31 @@ int main()
 {
 	int NumRanDat, Xmin, Xmax, NInt;
 	setlocale(LC_ALL, "Russian");
-	cout << "Ввидите длину массива: ";
+	cout << "Р’РІРёРґРёС‚Рµ РґР»РёРЅСѓ РјР°СЃСЃРёРІР°: ";
 	cin >> NumRanDat;
 	while (NumRanDat <= 0 || NumRanDat > 1024 * 16)
 	{
-		cout << "Массив неправильного размера. Введите значение ещё раз:";
+		cout << "РњР°СЃСЃРёРІ РЅРµРїСЂР°РІРёР»СЊРЅРѕРіРѕ СЂР°Р·РјРµСЂР°. Р’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ РµС‰С‘ СЂР°Р·:";
 		cin >> NumRanDat;
 	}
 
-	cout << "Введите диапазон изменения массива псевдослучайных целых чисел." << endl;
-	cout << "Минимум: ";
+	cout << "Р’РІРµРґРёС‚Рµ РґРёР°РїР°Р·РѕРЅ РёР·РјРµРЅРµРЅРёСЏ РјР°СЃСЃРёРІР° РїСЃРµРІРґРѕСЃР»СѓС‡Р°Р№РЅС‹С… С†РµР»С‹С… С‡РёСЃРµР»." << endl;
+	cout << "РњРёРЅРёРјСѓРј: ";
 	cin >> Xmin;
-	cout << "Максимум: ";
+	cout << "РњР°РєСЃРёРјСѓРј: ";
 	cin >> Xmax;
 	if (Xmax < Xmin)
 	{
 		swap(Xmin, Xmax);
-		cout << "Неверный ввод. Значения поменяли местами. Теперь Xmin = "<< Xmin << ", Xmax = " << Xmax;
+		cout << "РќРµРІРµСЂРЅС‹Р№ РІРІРѕРґ. Р—РЅР°С‡РµРЅРёСЏ РїРѕРјРµРЅСЏР»Рё РјРµСЃС‚Р°РјРё. РўРµРїРµСЂСЊ Xmin = "<< Xmin << ", Xmax = " << Xmax;
 	}
 
-	int rangeLen = Xmax - Xmin + 1; //длина диапазона
-	int* arr = new int[NumRanDat]; //массив случайных чисел
+	int rangeLen = Xmax - Xmin + 1; 
+	int* arr = new int[NumRanDat]; 
 	for (int i = 0; i < NumRanDat; i++)
 		arr[i] = Xmin + rand() % rangeLen;
 
-	cout << "Исходный массив: ";
+	cout << "РСЃС…РѕРґРЅС‹Р№ РјР°СЃСЃРёРІ: ";
 	for (int i = 0; i < NumRanDat; i++)
 		cout << arr[i] << " ";
 
@@ -64,22 +64,22 @@ int main()
 	first(arr, NumRanDat, Xmin, arrAnswer);
 	print_first(Xmin, Xmax, arrAnswer);
 
-	cout << endl << "Введите количество интервалов, на которые разбивается диапазон изменения массива псевдослучайных целых чисел: ";
+	cout << endl << "Р’РІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ РёРЅС‚РµСЂРІР°Р»РѕРІ, РЅР° РєРѕС‚РѕСЂС‹Рµ СЂР°Р·Р±РёРІР°РµС‚СЃСЏ РґРёР°РїР°Р·РѕРЅ РёР·РјРµРЅРµРЅРёСЏ РјР°СЃСЃРёРІР° РїСЃРµРІРґРѕСЃР»СѓС‡Р°Р№РЅС‹С… С†РµР»С‹С… С‡РёСЃРµР»: ";
 	cin >> NInt;
 	while (NInt <= 0 || NInt > 24 || NInt>rangeLen)
 	{
-		cout << "Неверный ввод. Попробуй ещё раз: ";
+		cout << "РќРµРІРµСЂРЅС‹Р№ РІРІРѕРґ. РџРѕРїСЂРѕР±СѓР№ РµС‰С‘ СЂР°Р·: ";
 		cin >> NInt;
 	}
 
-	int* LGrInt = new int[NInt + 1];  //массив левых границ для единичных отрезков
+	int* LGrInt = new int[NInt + 1];  
 	LGrInt[0] = Xmin;
-	cout << "Введите левые границы интервалов разбиения: " << endl;
+	cout << "Р’РІРµРґРёС‚Рµ Р»РµРІС‹Рµ РіСЂР°РЅРёС†С‹ РёРЅС‚РµСЂРІР°Р»РѕРІ СЂР°Р·Р±РёРµРЅРёСЏ: " << endl;
 	for (int i = 1; i < NInt; i++)
 	{
 		std::cin >> LGrInt[i];
 		while (LGrInt[i] > Xmax || LGrInt[i] < Xmin) {
-			std::cout << "Неправильное значение, попробуйте ещё раз: ";
+			std::cout << "РќРµРїСЂР°РІРёР»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ, РїРѕРїСЂРѕР±СѓР№С‚Рµ РµС‰С‘ СЂР°Р·: ";
 			std::cin >> LGrInt[i];
 		}
 	}
