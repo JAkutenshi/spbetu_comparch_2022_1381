@@ -10,11 +10,11 @@ xor edx, edx
 xor edi, edi
 
 finding:
-	mov edi, [eax + 4 * edx]		;значение
-	sub edi, Xmin					;индекс
-	inc dword ptr [ebx + 4 * edi]	;увеличение счетчика числа
-	inc edx							;следующее значение
-	loop finding					;уменьшает счётчик длины
+	mov edi, [eax + 4 * edx]		;Р·РЅР°С‡РµРЅРёРµ
+	sub edi, Xmin				;РёРЅРґРµРєСЃ
+	inc dword ptr [ebx + 4 * edi]		;СѓРІРµР»РёС‡РµРЅРёРµ СЃС‡РµС‚С‡РёРєР° С‡РёСЃР»Р°
+	inc edx					;СЃР»РµРґСѓСЋС‰РµРµ Р·РЅР°С‡РµРЅРёРµ
+	loop finding				;СѓРјРµРЅСЊС€Р°РµС‚ СЃС‡С‘С‚С‡РёРє РґР»РёРЅС‹
 
 	ret
 	first endp
