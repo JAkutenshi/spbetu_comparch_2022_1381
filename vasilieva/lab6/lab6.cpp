@@ -27,37 +27,11 @@ int main() {
 		return 0;
 	}
 
-	if (N_int < abs(X_max - X_min)) {
-		cout << "Количество интервалов дожно быть больше или равно разности макс. и мин. чисел диапазона\n";
-		system("Pause");
-		return 0;
-	}
-
 	cout << "Введите левые диапазоны:";
 	auto intervals = new int[N_int + 1];
 	for (int i = 0; i < N_int; i++)
 		cin >> intervals[i];
 
-	if (intervals[0] <= X_min) {
-		cout << "Первая левая граница должна быть больше мин. границы диапазона\n";
-		system("Pause");
-		return 0;
-	}
-
-	cout << "Введите правую границу\n";
-	cin >> intervals[N_int];
-
-	if (intervals[N_int] < intervals[N_int - 1]){
-		cout << "Правая граница последнего интервала должна быть больше левой границы последнего интервала\n";
-		system("Pause");
-		return 0;
-	}
-
-	if (intervals[N_int] <= X_max) {
-		cout << "Правая граница последнего интервала долна быть больше макс. границы диапазона\n";
-		system("Pause");
-		return 0;
-	}
 
 	auto numbers = new int[N];
 	random_device rd;
