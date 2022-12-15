@@ -6,7 +6,7 @@ int cmp(const void *a, const void *b){
     return *(int*)a - *(int*)b;
 }
 
-void func (int*, int*, int, int, int*);
+void func (int*, int*, int, int, int*, int*);
 
 int main () {
     srand(time(NULL));
@@ -52,14 +52,14 @@ int main () {
         res2[i] = 0;
     }
 
-    func(arr, LGrInt, NInt, NumRanDat, res);
+    func(arr, LGrInt, NInt, NumRanDat, res, res2);
 
     FILE* file = fopen("result.txt", "w");
 
     printf("Результат:\n");
     for (int i = 0; i < NInt; i++){
-        printf("%d\t%d\t%d\n", i+1, LGrInt[i], res[i]);
-        fprintf(file, "%d\t%d\t%d\n", i+1, LGrInt[i], res[i]);
+        printf("%d\t%d\t%d\t%d\n", i+1, LGrInt[i], res[i], res2[i]);
+        fprintf(file, "%d\t%d\t%d\t%d\n", i+1, LGrInt[i], res[i], res2[i]);
     }
 
     fclose(file);
