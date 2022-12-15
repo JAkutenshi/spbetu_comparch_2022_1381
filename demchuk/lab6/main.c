@@ -24,7 +24,7 @@ int main () {
 
     printf("Введите левые границы интервалов интервалов:\n");
 
-    for (int i = 0; i < NInt - 1; i++){
+    for (int i = 0; i < NInt; i++){
         scanf("%d", &LGrInt[i]);
         if (LGrInt[i] < Xmin || LGrInt[i] > Xmax){
             printf("Неверно введенные данные.\n");
@@ -52,24 +52,21 @@ int main () {
         res2[i] = 0;
     }
 
-    func(arr, LGrInt, NInt, NumRanDat, res, res2); //работает некорректно
-
-    //func(arr, LGrInt, NInt, NumRanDat, res); работает правильно
+    func(arr, LGrInt, NInt, NumRanDat, res);
 
     FILE* file = fopen("result.txt", "w");
-    
+
     printf("Результат:\n");
-    printf("%d\t%d\t%d\n", 1, Xmin, res[0]);
-    fprintf(file, "%d\t%d\t%d\n", 1, Xmin, res[0]);
-    for (int i = 2; i < NInt + 1; i++){
-        printf("%d\t%d\t%d\n", i, LGrInt[i-2], res[i-1]);
-        fprintf(file, "%d\t%d\t%d\n", i, LGrInt[i-2], res[i-1]);
+    for (int i = 0; i < NInt; i++){
+        printf("%d\t%d\t%d\n", i+1, LGrInt[i], res[i]);
+        fprintf(file, "%d\t%d\t%d\n", i+1, LGrInt[i], res[i]);
     }
 
     fclose(file);
     free(LGrInt);
     free(arr);
     free(res);
-
+    free(res2);
+	
     return 0;
 }
