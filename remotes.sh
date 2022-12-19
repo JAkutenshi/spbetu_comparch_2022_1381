@@ -1,4 +1,4 @@
-git remote add girlsnrcomparche     https://github.com/girlsnrose/spbetu_os_2022_1381.git     # Биктагирова Дарья    
+git remote add girlsnrose     https://github.com/girlsnrose/spbetu_comparch_2022_1381.git     # Биктагирова Дарья    
 git remote add Silence564     https://github.com/Silence564/spbetu_comparch_2022_1381.git     # Васильева Ольга      
 git remote add vozmitelvlas   https://github.com/vozmitelvlas/spbetu_comparch_2022_1381.git   # Возмитель Влас	      
 git remote add pddemchuk      https://github.com/pddemchuk/spbetu_comparch_2022_1381.git      # Демчук Полина        
@@ -22,5 +22,5 @@ git remote add D1mitrii       https://github.com/D1mitrii/spbetu_comparch_2022_1
 git remote add ForthA         https://github.com/ForthA/spbetu_comparch_2022_1381.git         # Тарасов Константин   
 git remote add mishatar       https://github.com/mishatar/spbetu_comparch_2022_1381.git       # Таргонский Михаил    
 git remote add alisselisss    https://github.com/alisselisss/spbetu_comparch_2022_1381.git    # Тулегенова Алиса     
-git remote add Astrokek       https://github.com/Astrokek/spbetu_comparch_2022_1381.git       # Туркова Дарья        
-git remote add HyperChacos1337 https://github.com/HyperChaos1337/spbetu_comparch_2022_1381.git # Хомутинников Никита  
+git remote add Astrokek       https://github.com/Astrokek/turkova.git                         # Туркова Дарья        
+git remote add HyperChaos1337 https://github.com/HyperChaos1337/spbetu_comparch_2022_1381.git # Хомутинников Никита  
