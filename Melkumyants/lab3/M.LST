@@ -1,0 +1,120 @@
+Microsoft (R) Macro Assembler Version 5.10                  10/21/22 21:40:2
+                                                             Page     1-1
+
+
+				dosseg
+				.model small
+				.stack 100h
+				.data
+ 0000  FFFF			i  dw -1
+ 0002  FFFB			a dw -5
+ 0004  FFFA			b dw -6
+ 0006  0001			k dw 1
+ 0008  0000			res dw ?
+				.code
+ 0000  B8 ---- R		mov ax, @data
+ 0003  8E D8			mov ds, ax
+				
+ 0005  A1 0002 R		mov ax, a
+ 0008  3B 06 0004 R		cmp ax, b
+ 000C  7F 1B			jg second
+				
+ 000E				first: ;if(a<=b)
+ 000E  8B 0E 0000 R		mov cx, i ;i
+ 0012  03 0E 0000 R		add cx, i ;2i
+ 0016  03 0E 0000 R		add cx, i ; 3i
+ 001A  D1 E1			sal cx, 1 ; 6i
+ 001C  F7 D9			neg cx  ; -6i
+ 001E  83 C1 06			add cx, 6 ;-(6i-6)
+				
+ 0021  8B C1			mov ax, cx ; -(6i-6)
+ 0023  05 0002			add ax, 2 ; -6i+8
+ 0026  EB 12 90			jmp final
+				
+ 0029				second: ;if(a>b)
+ 0029  A1 0000 R		mov ax, i ; i
+ 002C  B1 02			mov cl, 2
+ 002E  D3 E0			sal ax, cl ; 4i
+ 0030  F7 D8			neg ax    ; -4i
+ 0032  05 0007			add ax, 7 ; -4i+7
+				
+ 0035  8B C8			mov cx, ax ; -4i+7
+ 0037  83 C1 0D			add cx, 13 ; -4i+20
+				
+ 003A				final:
+ 003A				abs_1:
+ 003A  83 3E 0006 R 00		cmp k, 0
+ 003F  75 09			jnz abs_0
+ 0041  03 C1			add ax, cx
+ 0043  F7 D8			neg ax
+ 0045  78 F3			js abs_1
+ 0047  EB 0A 90			jmp ex
+				
+				
+ 004A				abs_0:
+ 004A  3B C8			cmp cx, ax
+ 004C  7C 03			jl mnr 
+ 004E  EB 03 90			jmp ex
+ 0051  8B C1			mnr: mov ax, cx
+Microsoft (R) Macro Assembler Version 5.10                  10/21/22 21:40:2
+                                                             Page     1-2
+
+
+ 0053  A3 0008 R		ex: mov res, ax
+ 0056  B4 4C			mov ah, 4ch
+ 0058  CD 21			int 21h
+				end
+Microsoft (R) Macro Assembler Version 5.10                  10/21/22 21:40:2
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	000A	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	005A	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+A  . . . . . . . . . . . . . . .  	L WORD	0002	_DATA
+ABS_0  . . . . . . . . . . . . .  	L NEAR	004A	_TEXT
+ABS_1  . . . . . . . . . . . . .  	L NEAR	003A	_TEXT
+
+B  . . . . . . . . . . . . . . .  	L WORD	0004	_DATA
+
+EX . . . . . . . . . . . . . . .  	L NEAR	0053	_TEXT
+
+FINAL  . . . . . . . . . . . . .  	L NEAR	003A	_TEXT
+FIRST  . . . . . . . . . . . . .  	L NEAR	000E	_TEXT
+
+I  . . . . . . . . . . . . . . .  	L WORD	0000	_DATA
+
+K  . . . . . . . . . . . . . . .  	L WORD	0006	_DATA
+
+MNR  . . . . . . . . . . . . . .  	L NEAR	0051	_TEXT
+
+RES  . . . . . . . . . . . . . .  	L WORD	0008	_DATA
+
+SECOND . . . . . . . . . . . . .  	L NEAR	0029	_TEXT
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  main		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     58 Source  Lines
+     58 Total   Lines
+     29 Symbols
+
+  48022 + 461285 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
