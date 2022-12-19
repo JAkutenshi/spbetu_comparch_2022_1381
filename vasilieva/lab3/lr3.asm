@@ -15,39 +15,38 @@ cmp ax, b  ;сравниваем a и b.
 jg f12_else  ;выполняет короткий переход, если a больше b
 
 f12_that:    ;if(a<=b) 
-mov cx, cx ;3i+4
-add cx, 2  ;3*(i+2) = 3i+6
+mov cx, i ;i
+add cx, i ;2i
+add cx, i ;3i
+add cx, 4 ;3i+4
 
-mov ax, i ;i
-add ax, i ;2i
-add ax, i ;3i
-add ax, 4 ;3i+4
+mov ax, cx ;3i+4
+add ax, 2  ;3*(i+2) = 3i+6
 jmp final
 
 f12_else:    ;if(a>b)
-mov cx, cx ;15-2i
-sub cx, i  ;15-3i
-sal cx, 1  ;30-6i
-sub cx, 26 ;-(6i-4) = -6i+4
+mov cx, 15  ;15
+sub cx, i  ;15-i
+sub cx, i  ;15-2i
 
-mov ax, 15  ;15
-sub ax, i  ;15-i
-sub ax, i  ;15-2i
+mov ax, cx ;15-2i
+sub ax, i  ;15-3i
+sal ax, 1  ;30-6i
+sub ax, 26 ;-(6i-4) = -6i+4
   
-
 final:
 abs_that:
 cmp k,0
-jnz abs_else
+jnz abs_else ;перейти если не равно
 add ax, cx
 neg ax
-js abs_that
 jmp results
 
 abs_else:
-cmp cx, ax
+cmp cx, ax ;сравниваем i1 и i2
 jl min
 jmp results
+
 min: mov ax, cx
 
 results: 
