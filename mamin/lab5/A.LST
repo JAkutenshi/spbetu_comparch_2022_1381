@@ -1,0 +1,227 @@
+Microsoft (R) Macro Assembler Version 5.10                  11/11/22 14:45:1
+                                                             Page     1-1
+
+
+       1				ASSUME CS:CODE, DS:DATA, SS:STACK
+       2				
+       3 0000				STACK    SEGMENT  STACK
+       4 0000  0400[			          DW 1024 DUP(?)
+       5	   ????			
+       6			 ]	
+       7				
+       8 0800				STACK    ENDS
+       9				
+      10 0000				DATA SEGMENT
+      11 0000  0000			        KEEP_CS DW 0 ; для хранения сег
+					мента
+      12 0002  0000			        KEEP_IP DW 0 ; и смещения векто
+					ра прерывания
+      13 0004  0000					NUM DW 0
+      14 0006  0002[					MESSAGE DB 2 DUP(?)
+      15	   ??			
+      16			 ]	
+      17				
+      18 0008				DATA ENDS
+      19				
+      20 0000				CODE SEGMENT
+      21				
+      22 0000				OutInt PROC
+      23 0000  52				push DX
+      24 0001  51				push CX
+      25				
+      26 0002  33 C9			    xor     cx, cx ; cx - количество ци
+					фр
+      27 0004  BB 000A			    mov     bx, 10 ; основание сс. 10 д
+					ля десятеричной и т.п.
+      28 0007				oi2:
+      29 0007  33 D2			    xor     dx,dx
+      30 0009  F7 F3			    div     bx ; делим число на основан
+					ие сс и сохраняем остаток в стеке
+      31 000B  52			    push    dx
+      32 000C  41			    inc     cx; увеличиваем количество 
+					цифр в cx
+      33					
+      34 000D  85 C0			    test    ax, ax ; проверка на 0
+      35 000F  75 F6			    jnz     oi2
+      36				; Вывод
+      37 0011  B4 02			    mov     ah, 02h
+      38 0013				oi3:
+      39 0013  5A			    pop     dx
+      40 0014  80 C2 30			    add     dl, '0' ; перевод цифры в с
+					имвол
+      41 0017  CD 21			    int     21h
+      42				; Повторим ровно столько раз, сколько ц
+					ифр насчитали.
+      43 0019  E2 F8			    loop    oi3 ; пока cx не 0 выполняе
+					тся переход
+      44				    
+      45 001B  59				POP CX
+Microsoft (R) Macro Assembler Version 5.10                  11/11/22 14:45:1
+                                                             Page     1-2
+
+
+      46 001C  5A				POP DX
+      47 001D  C3			    ret
+      48				 
+      49 001E				OutInt endp
+      50				
+      51				
+      52 001E				SUBR_INT PROC FAR
+      53 001E  EB 2D 90			        JMP start_proc
+      54 0021  0000					save_SP DW 0000h
+      55 0023  0000					save_SS DW 0000h
+      56 0025  0028[					INT_STACK DB 40 DUP(0)
+      57	   00			
+      58			 ]	
+      59				
+      60 004D				start_proc:
+      61 004D  2E: 89 26 0021 R		    MOV save_SP, SP
+      62 0052  2E: 8C 16 0023 R			MOV save_SS, SS
+      63 0057  BC ---- R			MOV SP, SEG INT_STACK
+      64 005A  8E D4				MOV SS, SP
+      65 005C  BC 004D R			MOV SP, offset start_proc
+      66 005F  50				PUSH AX    ; сохранение изменяе
+					мых регистров
+      67 0060  51				PUSH CX
+      68 0061  52				PUSH DX
+      69					
+      70 0062  B4 00				mov AH, 00H
+      71 0064  CD 1A				int 1AH
+      72					
+      73 0066  8B C1				mov AX, CX
+      74 0068  E8 0000 R			call OutInt
+      75 006B  8B C2				mov AX, DX
+      76 006D  E8 0000 R			call OutInt
+      77					
+      78 0070  5A				POP  DX
+      79 0071  59				POP  CX
+      80 0072  58				POP  AX   ; восстановление реги
+					стров
+      81 0073  2E: 8E 16 0023 R			MOV  SS, save_SS
+      82 0078  2E: 8B 26 0021 R			MOV  SP, save_SP
+      83 007D  B0 20				MOV  AL, 20H
+      84					
+      85 007F  E6 20				OUT  20H,AL
+      86				       
+      87 0081  CF				iret
+      88					
+      89 0082				SUBR_INT ENDP
+      90				
+      91				
+      92 0082				Main	PROC  FAR
+      93 0082  1E				push  DS       ;\  Сохранение а
+					дреса начала PSP в стеке
+      94 0083  2B C0				sub   AX,AX    ; > для последую
+					щего восстановления по
+      95 0085  50				push  AX       ;/  команде ret,
+Microsoft (R) Macro Assembler Version 5.10                  11/11/22 14:45:1
+                                                             Page     1-3
+
+
+					 завершающей процедуру.
+      96 0086  B8 ---- R			mov   AX,DATA             ; Заг
+					рузка сегментного
+      97 0089  8E D8				mov   DS,AX   
+      98				
+      99				
+     100					; Запоминание текущего вектора 
+					прерывания
+     101 008B  B4 35				MOV  AH, 35H   ; функция получе
+					ния вектора
+     102 008D  B0 08				MOV  AL, 08H   ; номер вектора
+     103 008F  CD 21				INT  21H
+     104 0091  89 1E 0002 R			MOV  KEEP_IP, BX  ; запоминание
+					 смещения
+     105 0095  8C 06 0000 R			MOV  KEEP_CS, ES  ; и сегмента
+     106					
+     107					; Установка вектора прерывания
+     108 0099  1E				PUSH DS
+     109 009A  BA 001E R			MOV  DX, OFFSET SUBR_INT ; смещ
+					ение для процедуры в DX
+     110 009D  B8 ---- R			MOV  AX, SEG SUBR_INT    ; сегм
+					ент процедуры
+     111 00A0  8E D8				MOV  DS, AX          ; помещаем
+					 в DS
+     112 00A2  B4 25				MOV  AH, 25H         ; функция 
+					установки вектора
+     113 00A4  B0 08				MOV  AL, 08H         ; номер ве
+					ктора
+     114 00A6  CD 21				INT  21H             ; меняем п
+					рерывание
+     115 00A8  1F				POP  DS
+     116				
+     117 00A9  CD 08				int 08H; на всякий вывод в конс
+					оль отдельно от отладчика
+     118				
+     119					; Восстановление изначального в
+					ектора прерывания (можно закомментить)
+     120 00AB  FA				CLI
+     121 00AC  1E				PUSH DS
+     122 00AD  8B 16 0002 R			MOV  DX, KEEP_IP
+     123 00B1  A1 0000 R			MOV  AX, KEEP_CS
+     124 00B4  8E D8				MOV  DS, AX
+     125 00B6  B4 25				MOV  AH, 25H
+     126 00B8  B0 08				MOV  AL, 08H
+     127 00BA  CD 21				INT  21H          ; восстанавли
+					ваем вектор
+     128 00BC  1F				POP  DS
+     129 00BD  FB				STI
+     130					
+     131 00BE  B4 4C				MOV AH, 4Ch                    
+					      
+     132 00C0  CD 21				INT 21h
+     133 00C2				Main      ENDP
+     134 00C2				CODE ENDS
+Microsoft (R) Macro Assembler Version 5.10                  11/11/22 14:45:1
+                                                             Page     1-4
+
+
+     135					END Main 
+Microsoft (R) Macro Assembler Version 5.10                  11/11/22 14:45:1
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	00C2	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0008	PARA	NONE	
+STACK  . . . . . . . . . . . . .  	0800	PARA	STACK	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+INT_STACK  . . . . . . . . . . .  	L BYTE	0025	CODE	Length = 0028
+
+KEEP_CS  . . . . . . . . . . . .  	L WORD	0000	DATA
+KEEP_IP  . . . . . . . . . . . .  	L WORD	0002	DATA
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0082	CODE	Length = 0040
+MESSAGE  . . . . . . . . . . . .  	L BYTE	0006	DATA	Length = 0002
+
+NUM  . . . . . . . . . . . . . .  	L WORD	0004	DATA
+
+OI2  . . . . . . . . . . . . . .  	L NEAR	0007	CODE
+OI3  . . . . . . . . . . . . . .  	L NEAR	0013	CODE
+OUTINT . . . . . . . . . . . . .  	N PROC	0000	CODE	Length = 001E
+
+SAVE_SP  . . . . . . . . . . . .  	L WORD	0021	CODE
+SAVE_SS  . . . . . . . . . . . .  	L WORD	0023	CODE
+START_PROC . . . . . . . . . . .  	L NEAR	004D	CODE
+SUBR_INT . . . . . . . . . . . .  	F PROC	001E	CODE	Length = 0064
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  lab5		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+    126 Source  Lines
+    126 Total   Lines
+     21 Symbols
+
+  47506 + 459754 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
