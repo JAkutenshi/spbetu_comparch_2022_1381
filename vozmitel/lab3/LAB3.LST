@@ -1,0 +1,133 @@
+Microsoft (R) Macro Assembler Version 5.10                  10/30/22 14:13:2
+                                                             Page     1-1
+
+
+				dosseg
+				.model small
+				.stack 100h
+				.data
+ 0000  0001			i dw 1
+ 0002  0006			a dw 6
+ 0004  0005			b dw 5
+ 0006  FFFF			k dw -1
+ 0008  0000			res dw ?
+				.code
+ 0000  B8 ---- R		mov ax, @data
+ 0003  8E D8			mov ds, ax
+ 0005  A1 0002 R		mov ax, a
+ 0008  3B 06 0004 R		cmp ax, b
+ 000C  7F 18			jg second
+ 000E				first: ;if(a<=b)
+ 000E  A1 0000 R			mov ax, i   ;i
+ 0011  D1 E0				shl ax, 1   ;2i
+ 0013  03 06 0000 R			add ax, i   ;3i
+ 0017  05 0004				add ax, 4	;3i+4		(1)
+					
+					
+ 001A  8B C8				mov cx, ax  ;3i+4
+ 001C  F7 D9				neg cx		;-3i-4
+ 001E  D1 E1				shl cx, 1	;-6i-8
+ 0020  83 C1 0E				add cx, 14	;-(6i-6)	(2) 
+ 0023  EB 12 90				jmp final
+				
+ 0026				second: ;if(a>b)
+ 0026  A1 0000 R			mov ax, i   ;i
+ 0029  D1 E0				shl ax, 1   ;2i
+ 002B  F7 D8				neg ax      ;-2i
+ 002D  05 000F				add ax, 15  ;-2i+15		(1)
+					
+ 0030  8B C8				mov cx, ax  ;-2i+15
+ 0032  D1 E1				shl cx, 1	;-4i+30
+ 0034  83 E9 0A				sub cx, 10	;-4i+20		(2)
+				
+ 0037				final:
+ 0037				min:
+ 0037  F7 D9				neg cx
+ 0039  83 3E 0006 R 00			cmp k, 0
+ 003E  7D 0E				jge max		;if(k>=0)
+ 0040  03 C8				add cx, ax	;-i2+i1
+ 0042					abs:
+ 0042  F7 D9				neg cx 
+ 0044  78 FC				js abs      ;|-i2+i1|
+ 0046  83 F9 02				cmp cx, 2
+ 0049  7D 0B				jge	result_min ;if(|i2 - i1|>=2)
+ 004B  EB 12 90				jmp result
+					
+ 004E				max:
+ 004E  83 F9 FA				cmp cx, -6
+ 0051  7E 09				jle result_max ;if(-i2<=-6)
+Microsoft (R) Macro Assembler Version 5.10                  10/30/22 14:13:2
+                                                             Page     1-2
+
+
+ 0053  EB 0A 90				jmp result
+				
+ 0056				result_min:
+ 0056  B9 0002				mov cx, 2
+ 0059  EB 04 90				jmp result
+				
+ 005C  B9 FFFA			result_max: mov cx, -6
+ 005F				result: 
+ 005F  89 0E 0008 R			mov res, cx
+ 0063  B4 4C				mov ah, 4ch
+ 0065  CD 21				int 21h
+					end
+Microsoft (R) Macro Assembler Version 5.10                  10/30/22 14:13:2
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	000A	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	0067	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+A  . . . . . . . . . . . . . . .  	L WORD	0002	_DATA
+ABS  . . . . . . . . . . . . . .  	L NEAR	0042	_TEXT
+
+B  . . . . . . . . . . . . . . .  	L WORD	0004	_DATA
+
+FINAL  . . . . . . . . . . . . .  	L NEAR	0037	_TEXT
+FIRST  . . . . . . . . . . . . .  	L NEAR	000E	_TEXT
+
+I  . . . . . . . . . . . . . . .  	L WORD	0000	_DATA
+
+K  . . . . . . . . . . . . . . .  	L WORD	0006	_DATA
+
+MAX  . . . . . . . . . . . . . .  	L NEAR	004E	_TEXT
+MIN  . . . . . . . . . . . . . .  	L NEAR	0037	_TEXT
+
+RES  . . . . . . . . . . . . . .  	L WORD	0008	_DATA
+RESULT . . . . . . . . . . . . .  	L NEAR	005F	_TEXT
+RESULT_MAX . . . . . . . . . . .  	L NEAR	005C	_TEXT
+RESULT_MIN . . . . . . . . . . .  	L NEAR	0056	_TEXT
+
+SECOND . . . . . . . . . . . . .  	L NEAR	0026	_TEXT
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  LAB3		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+Microsoft (R) Macro Assembler Version 5.10                  10/30/22 14:13:2
+                                                             Symbols-2
+
+
+
+     65 Source  Lines
+     65 Total   Lines
+     31 Symbols
+
+  47952 + 459308 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
