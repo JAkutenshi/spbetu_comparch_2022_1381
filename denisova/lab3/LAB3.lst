@@ -1,0 +1,164 @@
+Microsoft (R) Macro Assembler Version 5.10                  10/29/22 22:14:2
+                                                             Page     1-1
+
+
+ 0000				 AStack SEGMENT STACK
+ 0000  000C[				DW 12 DUP(?)
+	   ????			
+			 ]	
+				
+ 0018				AStack ENDS
+				
+ 0000				DATA SEGMENT
+ 0000  0002				a DW 2
+ 0002  0004				b DW 4
+ 0004  0005				i DW 5
+ 0006  0003				k DW 3
+ 0008  0000				i1 DW ?
+ 000A  0000				i2 DW ?
+ 000C  0000				result DW ?
+ 000E				DATA ENDS
+				
+ 0000				CODE SEGMENT
+					ASSUME CS:CODE, DS:DATA, SS:AStack
+					
+ 0000				Main PROC FAR
+ 0000  1E				push DS
+ 0001  2B C0				sub AX, AX
+ 0003  50				push AX
+ 0004  B8 ---- R			mov AX, DATA
+ 0007  8E D8				mov DS, AX
+					
+ 0009				start_calc:
+ 0009  A1 0004 R			mov AX, i ; AX = i
+ 000C  D1 E0				shl AX, 1 ; AX = 2i
+ 000E  8B 0E 0002 R			mov CX, b ; CX = b
+				
+ 0012  39 0E 0000 R			cmp a, CX 
+				
+ 0016  7F 18				jg calc_1 ; jump if a > b
+				
+ 0018				calc_2: ; a <= b
+ 0018  03 06 0004 R			add AX, i ; AX = 3i
+ 001C  8B C8				mov CX, AX ; CX = 3i
+ 001E  05 0004				add AX, 4 ; AX = 3i + 4
+ 0021  A3 0008 R			mov i1, AX ; i1 = 3i + 4
+					
+ 0024  F7 D9				neg CX	; CX = -3i
+ 0026  83 C1 0A				add CX, 10 ; CX = 10 - 3i
+ 0029  89 0E 000A R			mov i2, CX ; i2 = 10 - 3i
+					
+ 002D  EB 14 90				jmp res_calc
+				
+ 0030				calc_1: ; a > b
+ 0030  B9 000F				mov CX, 15 ; CX = 15
+ 0033  2B C8				sub CX, AX ; CX = 15 - 2i
+ 0035  89 0E 0008 R			mov i1, CX ; i1 = 15 - 2i
+				
+ 0039  D1 E0				shl AX, 1 ; AX = 4i
+Microsoft (R) Macro Assembler Version 5.10                  10/29/22 22:14:2
+                                                             Page     1-2
+
+
+ 003B  2D 0005				sub AX, 5 ; AX = 4i - 5
+ 003E  F7 D8				neg AX ; AX = - (4i - 5)
+ 0040  A3 000A R			mov i2, AX ; i2 = - (4i - 5)
+				
+ 0043				res_calc:
+ 0043  A1 0006 R			mov AX, k ; AX = k
+ 0046  3D 0000				cmp AX, 0 
+				
+ 0049  7C 18				jl res_1 ; jump if k < 0
+				
+					; k >= 0
+ 004B  A1 000A R			mov AX, i2 ; AX = i2
+ 004E  3D 0000				cmp AX, 0 
+ 0051  7D 02				jge mod_ok ; AX = abs(i2)
+					
+ 0053  F7 D8				neg AX
+				
+ 0055				mod_ok: 
+ 0055  3D 0007				cmp AX, 7
+ 0058  7D 03				jge ok_1 ; jump if abs(i2) >= 7
+					
+ 005A  B8 0007				mov AX, 7
+ 005D				ok_1:
+ 005D  A3 000C R			mov result, AX ; result = AX
+ 0060  EB 12 90				jmp finish
+ 0063				res_1:
+ 0063  A1 0008 R			mov AX, i1 ; AX = i1
+ 0066  2B 06 000A R			sub AX, i2 ; AX = i1 - i2
+ 006A  3D 0000				cmp AX, 0
+ 006D  7D 02				jge mod_ok_1 ; AX = abs(i1 - i2)
+				
+ 006F  F7 D8				neg AX
+ 0071				mod_ok_1:
+ 0071  A3 000C R			mov result, AX
+				
+ 0074				finish:
+ 0074  CB				ret
+				
+ 0075				MAIN ENDP
+ 0075				CODE ENDS
+				
+				END Main
+Microsoft (R) Macro Assembler Version 5.10                  10/29/22 22:14:2
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+ASTACK . . . . . . . . . . . . .  	0018	PARA	STACK	
+CODE . . . . . . . . . . . . . .  	0075	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	000E	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+A  . . . . . . . . . . . . . . .  	L WORD	0000	DATA
+
+B  . . . . . . . . . . . . . . .  	L WORD	0002	DATA
+
+CALC_1 . . . . . . . . . . . . .  	L NEAR	0030	CODE
+CALC_2 . . . . . . . . . . . . .  	L NEAR	0018	CODE
+
+FINISH . . . . . . . . . . . . .  	L NEAR	0074	CODE
+
+I  . . . . . . . . . . . . . . .  	L WORD	0004	DATA
+I1 . . . . . . . . . . . . . . .  	L WORD	0008	DATA
+I2 . . . . . . . . . . . . . . .  	L WORD	000A	DATA
+
+K  . . . . . . . . . . . . . . .  	L WORD	0006	DATA
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0000	CODE	Length = 0075
+MOD_OK . . . . . . . . . . . . .  	L NEAR	0055	CODE
+MOD_OK_1 . . . . . . . . . . . .  	L NEAR	0071	CODE
+
+OK_1 . . . . . . . . . . . . . .  	L NEAR	005D	CODE
+
+RESULT . . . . . . . . . . . . .  	L WORD	000C	DATA
+RES_1  . . . . . . . . . . . . .  	L NEAR	0063	CODE
+RES_CALC . . . . . . . . . . . .  	L NEAR	0043	CODE
+
+START_CALC . . . . . . . . . . .  	L NEAR	0009	CODE
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  lab3		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+Microsoft (R) Macro Assembler Version 5.10                  10/29/22 22:14:2
+                                                             Symbols-2
+
+
+
+     93 Source  Lines
+     93 Total   Lines
+     25 Symbols
+
+  48034 + 446649 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
