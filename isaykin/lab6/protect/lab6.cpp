@@ -4,7 +4,7 @@
 using namespace std;
 std::ofstream file("out.txt");
 extern "C" {void function1(int* array, int arr_len, int* answer, int mi, int v); }
-extern "C" {void function2(int* array, int arr_len, int* l_borders, int bord_len, int mi, int* answer); }
+extern "C" {void function2(int* array, int arr_len, int* l_borders, int bord_len, int mi, int* amswer_max, int* answer); }
 void sort(int*arr, int count_) {
 	for (int i = 0; i < count_ - 1; i++) {
 		for (int j = 0; j < count_ - i - 1; j++) {
@@ -62,10 +62,11 @@ int main() {
 	}
 	cout << endl;
 	int* final_result = new int[count] {0};
-	function2(buf_result, ma - mi + 1, l_borders, count, mi, final_result);
+	int* max_on_interval = new int[count] {mi - 1};
+	function2(buf_result, ma - mi + 1, l_borders, count, mi, max_on_interval, final_result);
     for(int i = 0; i < count; i++){
-        file<<'('<<l_borders[i]<<") = "<<final_result[i]<<"; ";
-		cout << '(' << l_borders[i] << ") = " << final_result[i] << "; ";
+        file << '(' << l_borders[i] << ") = " << final_result[i] << " (max - " << max_on_interval[i] << "); ";
+		cout << '(' << l_borders[i] << ") = " << final_result[i]<<" (max - "<< max_on_interval[i] <<"); ";
     }
 	delete[] arr;
 	delete[] l_borders;
