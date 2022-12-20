@@ -12,6 +12,8 @@ int rand_between(int const from, int const to) {
     
 }
 
+
+
 void module(int*, int*, int, int, int*);
 
 int cmp(const void *a, const void *b){
@@ -25,7 +27,7 @@ int main () {
     printf("\t---Введите длину массива, минимум и максимум диапазона и количество интервалов---:\n");
     scanf("%d %d %d %d", &NumRanDat, &Xmin, &Xmax, &NInt);
 
-    int* LGrInt = calloc(NInt, sizeof(int));
+    int* LGrInt = calloc(NInt-1, sizeof(int));
     
     printf("\t---Введите левые границы интервалов---(их %d)\n", NInt-1);
 
@@ -46,15 +48,25 @@ int main () {
     int* res = calloc(NInt, sizeof(int));
 
     module(arr, LGrInt, NInt, NumRanDat, res);
+    qsort(arr, NumRanDat, sizeof(int), cmp);
+    
+    for (int i = 0; i < NumRanDat; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
     FILE* file = fopen("answer.txt", "w");
 
     printf("\t---Результат--:\n");
-    printf("%d\t%d\t%d\n", 1, Xmin, res[0]);
-    fprintf(file, "%d\t%d\t%d\n", 1, Xmin, res[0]);
-    for (int i = 2; i < NInt + 1; i++){
-        printf("%d\t%d\t%d\n", i, LGrInt[i-2], res[i-1]);
-        fprintf(file, "%d\t%d\t%d\n", i, LGrInt[i-2], res[i-1]);
+    printf("%d)\t[%d;%d)\t%d\n", 1, Xmin,LGrInt[0], res[0]);
+    fprintf(file, "%d)\t[%d;%d)\t%d\n", 1, Xmin,LGrInt[0], res[0]);
+    int tmp;
+    for (int i = 1; i < NInt-1; i++){
+        printf("%d)\t[%d;%d)\t%d\n", i+1, LGrInt[i-1],LGrInt[i], res[i]);
+        fprintf(file, "%d)\t[%d;%d)\t%d\n", i+1, LGrInt[i-1],LGrInt[i], res[i]);
+        tmp = i;
     }
+    printf("%d)\t[%d;%d]\t%d\n", tmp+1, LGrInt[NInt-2], Xmax, res[NInt-1]);
+    fprintf(file, "%d)\t[%d;%d]\t%d\n", tmp+1, LGrInt[NInt-2], Xmax, res[NInt-1]);
+
     free(LGrInt);
     free(arr);
     free(res);
