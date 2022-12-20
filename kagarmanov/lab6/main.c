@@ -14,7 +14,7 @@ int rand_between(int const from, int const to) {
 
 
 
-void module(int*, int*, int, int, int*);
+void module(int*, int*, int, int, int*, int*);
 
 int cmp(const void *a, const void *b){
     return *(int*)a - *(int*)b;
@@ -46,8 +46,9 @@ int main () {
     printf("\n");
 
     int* res = calloc(NInt, sizeof(int));
+    int* res2 = calloc(NInt, sizeof(int));
 
-    module(arr, LGrInt, NInt, NumRanDat, res);
+    module(arr, LGrInt, NInt, NumRanDat, res, res2);
     qsort(arr, NumRanDat, sizeof(int), cmp);
 
     for (int i = 0; i < NumRanDat; i++)
@@ -56,16 +57,16 @@ int main () {
     FILE* file = fopen("answer.txt", "w");
 
     printf("\t---Результат--:\n");
-    printf("%d)\t[%d;%d)\t%d\n", 1, Xmin,LGrInt[1], res[0]);
-    fprintf(file, "%d)\t[%d;%d)\t%d\n", 1, Xmin,LGrInt[0], res[0]);
+    printf("%d)\t[%d;%d)\t%d\t Sum = %d\n", 1, Xmin,LGrInt[1], res[0], res2[0]);
+    fprintf(file, "%d)\t[%d;%d)\t%d\t Sum = %d\n", 1, Xmin,LGrInt[0], res[0], res2[0]);
     int tmp;
     for (int i = 1; i < NInt-1; i++){
-        printf("%d)\t[%d;%d)\t%d\n", i+1, LGrInt[i],LGrInt[i+1], res[i]);
-        fprintf(file, "%d)\t[%d;%d)\t%d\n", i+1, LGrInt[i],LGrInt[i+1], res[i]);
+        printf("%d)\t[%d;%d)\t%d\t Sum = %d\n", i+1, LGrInt[i],LGrInt[i+1], res[i], res2[i]);
+        fprintf(file, "%d)\t[%d;%d)\t%d\t Sum = %d\n", i+1, LGrInt[i],LGrInt[i+1], res[i], res2[i]);
         tmp = i;
     }
-    printf("%d)\t[%d;%d]\t%d\n", tmp+1, LGrInt[NInt-1], Xmax, res[NInt-1]);
-    fprintf(file, "%d)\t[%d;%d]\t%d\n", tmp+1, LGrInt[NInt-2], Xmax, res[NInt-1]);
+    printf("%d)\t[%d;%d]\t%d\t Sum = %d\n", tmp+1, LGrInt[NInt-1], Xmax, res[NInt-1], res2[NInt-1]);
+    fprintf(file, "%d)\t[%d;%d]\t%d\t Sum = %d\n", tmp+1, LGrInt[NInt-2], Xmax, res[NInt-1], res2[NInt-1]);
 
     free(LGrInt);
     free(arr);
